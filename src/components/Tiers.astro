@@ -1,0 +1,82 @@
+---
+/**
+ * Tiers — layered architecture diagram (e.g. CRM data model).
+ * Each tier: a name, an optional note, and a set of items (optionally grouped).
+ */
+interface Group { name: string; items: string[] }
+interface Tier { name: string; note?: string; items?: string[]; groups?: Group[]; accent?: boolean }
+interface Props { tiers: Tier[]; title?: string; caption?: string }
+const { tiers, title, caption } = Astro.props;
+---
+<figure class="tiers" data-reveal>
+  {title && <figcaption class="tiers__title label label--caps">{title}</figcaption>}
+  <ol class="tiers__list" role="list">
+    {tiers.map((t, i) => (
+      <li class:list={['tier', { 'tier--accent': t.accent }]} style={`--i:${i}`}>
+        <div class="tier__head">
+          <span class="label">{String(i + 1).padStart(2, '0')}</span>
+          <span class="tier__name">{t.name}</span>
+          {t.note && <span class="tier__note">{t.note}</span>}
+        </div>
+        <div class="tier__body">
+          {t.items && (
+            <ul class="tier__items" role="list">
+              {t.items.map((it) => <li class="chip">{it}</li>)}
+            </ul>
+          )}
+          {t.groups && (
+            <div class="tier__groups">
+              {t.groups.map((g) => (
+                <div class="tier__group">
+                  <p class="label">{g.name}</p>
+                  <ul class="tier__items" role="list">
+                    {g.items.map((it) => <li class="chip">{it}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </li>
+    ))}
+  </ol>
+  {caption && <p class="tiers__caption label">{caption}</p>}
+</figure>
+
+<style>
+  .tiers { margin: 0; }
+  .tiers__title { display: block; margin-bottom: 1.25rem; }
+  .tiers__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+  .tier {
+    display: grid; grid-template-columns: minmax(12rem, 1fr) 3fr; gap: 1.5rem;
+    padding: 1.4rem 0; border-bottom: 1px solid var(--rule); position: relative;
+  }
+  .tier + .tier::before {
+    content: '↓'; position: absolute; top: -0.8rem; left: 0; font-family: var(--font-mono); font-size: 0.8rem;
+    background: var(--paper); padding-inline: 0.25rem 0.4rem; color: var(--ink-3); line-height: 1.5;
+  }
+  .night .tier + .tier::before { background: var(--night); }
+  .tier__head { display: grid; gap: 0.25rem; align-content: start; }
+  .tier__name { font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.01em; line-height: 1.25; }
+  .tier__note { font-size: var(--fs-sm); color: var(--ink-3); line-height: 1.45; }
+  .tier__items { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+  .tier__groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem 1.5rem; }
+  .tier__group { display: grid; gap: 0.55rem; align-content: start; }
+  .chip {
+    font-size: var(--fs-sm); line-height: 1.25; padding: 0.42rem 0.7rem;
+    border: 1px solid var(--rule-strong); border-radius: var(--radius); background: color-mix(in srgb, var(--paper-2) 60%, transparent);
+  }
+  .night .chip { background: var(--night-2); }
+  .tier--accent .chip { border-color: var(--ink); }
+  .tier--accent .tier__name::after { content: ' ●'; color: var(--accent); font-size: 0.6em; vertical-align: middle; }
+  .tiers__caption { margin-top: 1.25rem; max-width: 44rem; }
+
+  @media (max-width: 44rem) {
+    .tier { grid-template-columns: 1fr; gap: 0.9rem; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .tiers[data-reveal] { opacity: 1; transform: none; }
+    :global(.js) .tiers[data-reveal] .tier { opacity: 0; transform: translateY(10px); transition: opacity 0.6s var(--ease), transform 0.7s var(--ease); transition-delay: calc(var(--i) * 110ms); }
+    :global(.js) .tiers[data-reveal].is-in .tier { opacity: 1; transform: none; }
+  }
+</style>

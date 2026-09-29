@@ -1,0 +1,18 @@
+---
+interface Props { items: { label: string; value: string }[] }
+const { items } = Astro.props;
+const isPh = (v: string) => v.startsWith('[NEEDS USER INFORMATION');
+---
+<dl class="meta">
+  {items.map((m) => (
+    <div class="meta__row">
+      <dt class="label label--caps">{m.label}</dt>
+      <dd>{isPh(m.value) ? <span class="ph" data-placeholder>{m.value}</span> : m.value}</dd>
+    </div>
+  ))}
+</dl>
+<style>
+  .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0; margin: 0; border-top: 1px solid var(--ink); }
+  .meta__row { display: grid; gap: 0.35rem; align-content: start; padding: 1rem 1.25rem 1rem 0; border-bottom: 1px solid var(--rule); }
+  .meta dd { margin: 0; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink); }
+</style>

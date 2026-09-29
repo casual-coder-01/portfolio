@@ -1,0 +1,18 @@
+---
+/** Full-width block inside a case study (for diagrams, galleries, video). */
+interface Props { title?: string; note?: string }
+const { title, note } = Astro.props;
+---
+<div class="wide">
+  {(title || note) && (
+    <div class="wide__head">
+      {title && <h3 class="h4">{title}</h3>}
+      {note && <p class="label">{note}</p>}
+    </div>
+  )}
+  <slot />
+</div>
+<style>
+  .wide { padding-block: clamp(1.5rem, 3vw, 2.75rem) clamp(2.5rem, 5vw, 4rem); }
+  .wide__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 2rem; margin-bottom: 1.5rem; }
+</style>

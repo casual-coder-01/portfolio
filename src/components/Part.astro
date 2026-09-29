@@ -1,0 +1,27 @@
+---
+/** Two-column case-study section: index + title on the left, content on the right. */
+interface Props { n: string; title: string }
+const { n, title } = Astro.props;
+const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+<section class="part" aria-labelledby={id} data-reveal>
+  <div class="part__head">
+    <span class="label">{n}</span>
+    <h2 id={id} class="part__title">{title}</h2>
+  </div>
+  <div class="part__body prose">
+    <slot />
+  </div>
+</section>
+<style>
+  .part {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 2vw, 2rem);
+    padding-block: clamp(2.25rem, 4vw, 3.5rem); border-top: 1px solid var(--rule);
+  }
+  .part__head { grid-column: 1 / span 4; display: grid; gap: 0.5rem; align-content: start; padding-bottom: 1rem; }
+  .part__title { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.015em; line-height: 1.15; text-wrap: balance; }
+  .part__body { grid-column: 5 / span 7; }
+  @media (max-width: 56rem) {
+    .part__head, .part__body { grid-column: 1 / -1; }
+  }
+</style>

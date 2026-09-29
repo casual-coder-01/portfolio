@@ -1,0 +1,105 @@
+---
+order: 4
+title: "WhatsApp automation for an intern-agent programme"
+cardTitle: "WhatsApp automation for an intern-agent programme"
+kicker: "Marketing automation"
+summary: "A bilingual WhatsApp sequence on Interakt designed to recruit each internship cohort — and the CRM model that tracks graduates as referral agents, from commission to payout."
+preview: "A bilingual Interakt sequence that recruits a cohort, and the CRM model that turns interns into referral agents with tracked commissions."
+meta:
+  - { label: Role, value: Messaging & CRM design }
+  - { label: Brand, value: MEGO Forex }
+  - { label: Channel, value: WhatsApp Business via Interakt }
+  - { label: Languages, value: English · Hindi }
+  - { label: Period, value: "2026" }
+tools: [Interakt, WhatsApp Business, Zoho CRM]
+tags: [WhatsApp automation, Consent, Programme design]
+visual: whatsapp
+seoDescription: "Case study — a bilingual Interakt WhatsApp sequence and Zoho CRM agent-commission model designed by Abhinav Thakur for MEGO Forex's internship programme."
+---
+import Part from '../../components/Part.astro';
+import Flow from '../../components/Flow.astro';
+import Wide from '../../components/Wide.astro';
+import TemplateCard from '../../components/TemplateCard.astro';
+
+<Part n="01" title="Overview">
+MEGO Forex runs an internship programme. Students register, complete <abbr title="know your customer — identity verification">KYC</abbr> and sit an entry exam, train as agents, and can then refer customers — earning commission on the business they bring in.
+
+It's recruitment, onboarding and a sales channel in one. WhatsApp is where the conversation happens; the CRM is where it's recorded, attributed and paid.
+</Part>
+
+<Wide title="The system" note="From first message to payout">
+<Flow
+  cols={4}
+  steps={[
+    { label: 'Reach', note: 'WhatsApp, social ads and referrals.' },
+    { label: 'Five-message sequence', tool: 'Interakt', note: 'English and Hindi, approved by Meta.' },
+    { label: 'Register', note: 'Free registration per cohort.' },
+    { label: 'KYC & entry exam' },
+    { label: 'Trainee → graduate', note: 'Tracked as agent stages in the CRM.' },
+    { label: 'Agent refers customers', tool: 'Zoho CRM', note: 'Each lead carries its referring agent.' },
+    { label: 'Commission → payout', note: 'Pending, approved, paid or disputed — per agent.' },
+  ]}
+/>
+</Wide>
+
+<Part n="02" title="The message sequence">
+Five approved WhatsApp marketing templates, each in English and Hindi:
+
+1. **First contact** — the opening message.
+2. **Programme info** — what the internship involves.
+3. **How to join** — how to register and sit the entry exam.
+4. **Deadline reminder** — registration is closing.
+5. **Final hours** — last call, with an open invitation to reply to a person.
+
+Every template carries an opt-out line, and each message has one job.
+</Part>
+
+<Wide title="Built to be reused" note="Reusable version I drafted · cohort and dates as variables">
+<TemplateCard
+  name="mego_intern_deadline_reminder · English"
+  body={"Quick reminder, {{1}} — registration for cohort {{2}} closes on {{3}}.\n\nThe entry exam window closes the same day, so if you want this cohort it is worth registering today rather than leaving it. Registration is free and takes a few minutes.\n\nResults are published on {{4}} and the internship runs {{5}}."}
+  footer="Reply STOP to opt out anytime"
+  button="Register now"
+  legend={[
+    { v: '{{1}}', means: 'Recipient’s first name' },
+    { v: '{{2}}', means: 'Cohort ID' },
+    { v: '{{3}}', means: 'Registration and entry-exam deadline' },
+    { v: '{{4}}', means: 'Results date' },
+    { v: '{{5}}', means: 'Internship dates' },
+  ]}
+/>
+</Wide>
+
+<Part n="03" title="Making it reusable">
+The first versions of the templates had the cohort ID and every date written directly into the copy. That works once. For the next cohort, every template would need rewriting and re-approval by Meta.
+
+I reworked the copy so the cohort, deadline, results date and internship dates become **variables** filled in at send time — so each template could be approved once and reused for every cohort. I also flagged the one thing that can't be a variable: Meta doesn't allow variables in a button's label, so any date in button text has to go and the call to action has to be written date-free.
+</Part>
+
+<Part n="04" title="Consent and the human handoff">
+- **Consent is recorded, not assumed.** The CRM stores WhatsApp, SMS and email consent separately, with the source, the version of the privacy notice shown and a timestamp.
+- **Each lead records who handled the conversation** — the AI bot, a person, or escalated — so nobody falls through the gap between automation and the team.
+- **A person is one reply away.** The final message ends: *"If something is holding you back, just reply here and someone from our team will help."*
+</Part>
+
+<Wide title="The agent data model" note="Custom Zoho CRM modules I built">
+<Flow
+  compact
+  cols={4}
+  accentLast={false}
+  steps={[
+    { label: 'Cohort', note: 'Dates, capacity, track (stipend or certification) and status.' },
+    { label: 'Agent', note: 'KYC status, referral code, and stage: registered → KYC verified → exam submitted → trainee → graduated → agent.' },
+    { label: 'Agent commission', note: 'Linked to the agent and the deal; pending, approved, paid or disputed.' },
+    { label: 'Agent payout', note: 'Gross, TDS (tax deducted at source), deductions and net, with payment status.' },
+  ]}
+/>
+</Wide>
+
+<Part n="05" title="Outcome">
+The templates are approved in English and Hindi, a reusable version is ready for future cohorts, and the CRM has consent and handling fields on every lead — plus a data model that links each commission to its agent, deal and payout.
+</Part>
+
+<Part n="06" title="Capabilities demonstrated">
+WhatsApp Business template design · working within Meta's platform rules · bilingual messaging · consent-first automation · bot-to-human handoff · data modelling for a commission-based channel.
+</Part>

@@ -1,0 +1,94 @@
+---
+/** One lightbox per page. Opens any link marked [data-lb]; without JS the link opens the image directly. */
+---
+<dialog class="lb" aria-label="Image viewer" data-lightbox>
+  <div class="lb__bar">
+    <p class="lb__count label" data-lb-count></p>
+    <button class="lb__btn" type="button" data-lb-close aria-label="Close viewer">Close ✕</button>
+  </div>
+  <figure class="lb__fig">
+    <img data-lb-img alt="" />
+    <figcaption class="lb__cap label" data-lb-cap></figcaption>
+  </figure>
+  <div class="lb__nav">
+    <button class="lb__btn" type="button" data-lb-prev aria-label="Previous image">← Prev</button>
+    <button class="lb__btn" type="button" data-lb-next aria-label="Next image">Next →</button>
+  </div>
+</dialog>
+
+<style>
+  .lb {
+    width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0;
+    border: 0; background: rgba(8, 9, 10, 0.97); color: var(--night-ink);
+    display: none; grid-template-rows: auto 1fr auto;
+  }
+  .lb[open] { display: grid; }
+  .lb::backdrop { background: rgba(8, 9, 10, 0.9); }
+  .lb__bar, .lb__nav { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem var(--gutter); }
+  .lb__count, .lb__cap { color: var(--night-ink-2); }
+  .lb__fig { display: grid; place-items: center; min-height: 0; padding: 0 var(--gutter); gap: 0.75rem; grid-template-rows: minmax(0, 1fr) auto; }
+  .lb__fig img { max-width: 100%; max-height: calc(100dvh - 9.5rem); width: auto; height: auto; object-fit: contain; }
+  .lb__btn {
+    background: none; border: 1px solid #3b3f45; color: var(--night-ink); border-radius: 999px;
+    padding: 0.55rem 1rem; font-size: var(--fs-sm); min-height: 2.75rem;
+  }
+  .lb__btn:hover { border-color: var(--night-ink); }
+  .lb__btn:focus-visible { outline-color: var(--night-accent); }
+</style>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-lb]'));
+  if (dlg && links.length && typeof dlg.showModal === 'function') {
+    const img = dlg.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const cap = dlg.querySelector<HTMLElement>('[data-lb-cap]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      index = (i + links.length) % links.length;
+      const a = links[index];
+      img.src = a.href;
+      img.alt = a.dataset.lbAlt ?? '';
+      cap.textContent = a.dataset.lbCaption ?? '';
+      count.textContent = `${index + 1} / ${links.length}`;
+      // warm the next image
+      const next = new Image();
+      next.src = links[(index + 1) % links.length].href;
+    };
+
+    links.forEach((a, i) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        opener = a;
+        show(i);
+        dlg.showModal();
+        document.body.style.overflow = 'hidden';
+      }),
+    );
+    dlg.querySelector('[data-lb-close]')?.addEventListener('click', () => dlg.close());
+    dlg.querySelector('[data-lb-prev]')?.addEventListener('click', () => show(index - 1));
+    dlg.querySelector('[data-lb-next]')?.addEventListener('click', () => show(index + 1));
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(index + 1);
+      if (e.key === 'ArrowLeft') show(index - 1);
+    });
+    dlg.addEventListener('close', () => {
+      document.body.style.overflow = '';
+      img.removeAttribute('src');
+      opener?.focus();
+    });
+
+    // swipe on touch devices
+    let x0: number | null = null;
+    dlg.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+    dlg.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+  }
+</script>

@@ -1,0 +1,113 @@
+---
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const links = [
+  { href: url('/#work'), label: 'Work' },
+  { href: url('/#experience'), label: 'Experience' },
+  { href: url('/#about'), label: 'About' },
+  ...(site.resumeAvailable ? [{ href: url(site.resumePath), label: 'Résumé' }] : []),
+  { href: url('/#contact'), label: 'Contact' },
+];
+---
+<header class="hdr" data-header>
+  <div class="wrap hdr__inner">
+    <a class="hdr__brand" href={url('/')} aria-label={`${site.name} — home`}>
+      <span class="hdr__name">Abhinav Thakur</span>
+      <span class="hdr__role label">BD · Growth systems · AI marketing</span>
+    </a>
+
+    <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+      <span class="hdr__toggle-text">Menu</span>
+      <span class="hdr__burger" aria-hidden="true"><span></span><span></span></span>
+    </button>
+
+    <nav id="site-nav" class="hdr__nav" aria-label="Primary" data-nav>
+      <ul role="list">
+        {links.map((l) => (
+          <li><a href={l.href} data-nav-link>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .hdr { backdrop-filter: saturate(1.2) blur(10px); }
+  }
+  .hdr.is-scrolled { border-bottom-color: var(--rule); }
+  .hdr__inner { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .hdr__brand { display: flex; align-items: baseline; gap: 0.85rem; text-decoration: none; min-width: 0; }
+  .hdr__name { font-weight: 650; letter-spacing: -0.015em; font-size: 1.02rem; white-space: nowrap; }
+  .hdr__role { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hdr__nav ul { display: flex; gap: clamp(1rem, 2.2vw, 2rem); }
+  .hdr__nav a {
+    font-size: var(--fs-sm); text-decoration: none; color: var(--ink-2);
+    padding-block: 0.5rem; position: relative;
+  }
+  .hdr__nav a::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0.2rem; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.3s var(--ease);
+  }
+  .hdr__nav a:hover { color: var(--ink); }
+  .hdr__nav a:hover::after { transform: scaleX(1); }
+  .hdr__toggle { display: none; }
+
+  @media (max-width: 52rem) {
+    .hdr__role { display: none; }
+    .hdr__toggle {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: none; border: 1px solid var(--rule-strong); border-radius: 999px;
+      padding: 0.45rem 0.85rem; font-size: var(--fs-sm); min-height: 2.5rem;
+    }
+    .hdr__burger { display: grid; gap: 4px; width: 14px; }
+    .hdr__burger span { display: block; height: 1.5px; background: currentColor; transition: transform 0.25s var(--ease); }
+    .hdr__toggle[aria-expanded='true'] .hdr__burger span:first-child { transform: translateY(2.75px) rotate(45deg); }
+    .hdr__toggle[aria-expanded='true'] .hdr__burger span:last-child { transform: translateY(-2.75px) rotate(-45deg); }
+
+    .hdr__nav {
+      position: fixed; inset: var(--header-h) 0 auto 0;
+      background: var(--paper); border-bottom: 1px solid var(--rule);
+      padding: 0.5rem var(--gutter) 1.5rem;
+      display: none;
+    }
+    .hdr__nav.is-open { display: block; }
+    .hdr__nav ul { flex-direction: column; gap: 0; }
+    .hdr__nav li + li { border-top: 1px solid var(--rule); }
+    .hdr__nav a { display: block; padding-block: 1rem; font-size: var(--fs-lg); color: var(--ink); letter-spacing: -0.01em; }
+    .hdr__nav a::after { display: none; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    nav?.classList.toggle('is-open', open);
+    const text = toggle?.querySelector('.hdr__toggle-text');
+    if (text) text.textContent = open ? 'Close' : 'Menu';
+  };
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  nav?.querySelectorAll('[data-nav-link]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  matchMedia('(min-width: 52.01rem)').addEventListener('change', (m) => m.matches && setOpen(false));
+</script>

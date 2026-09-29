@@ -1,0 +1,6 @@
+---
+/** Visible marker for content that still needs confirming. Search the repo for "NEEDS USER INFORMATION". */
+interface Props { what: string }
+const { what } = Astro.props;
+---
+<span class="ph" data-placeholder>[NEEDS USER INFORMATION: {what}]</span>

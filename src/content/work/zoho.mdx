@@ -1,0 +1,99 @@
+---
+order: 2
+title: "Zoho One: the operating system for a two-brand fintech"
+cardTitle: "Zoho One — the operating system for a two-brand fintech"
+kicker: "CRM & business operations"
+summary: "I structured a large part of RBP Finivis's Zoho One environment — CRM architecture, pipelines, custom modules and the operational set-up around them — for one licensed company serving consumers, institutions and an intern-agent programme."
+preview: "Brand-specific lead layouts, three deal pipelines and a partner-programme data model — plus the clean-up that made the data trustworthy."
+meta:
+  - { label: Role, value: CRM architecture & configuration }
+  - { label: Company, value: RBP Finivis · MEGO Forex }
+  - { label: Scope, value: 3 customer journeys · 1 Zoho org }
+  - { label: Period, value: "2026" }
+tools: [Zoho CRM, SalesIQ, Forms, Marketing Automation, Projects, People, WorkDrive, Cliq, Sign]
+tags: [CRM architecture, RevOps, Zoho One]
+visual: crm
+seoDescription: "Case study — how Abhinav Thakur structured Zoho CRM (Zoho One) for RBP Finivis and MEGO Forex: brand layouts, three pipelines, custom agent-commission modules and a data clean-up."
+---
+import Part from '../../components/Part.astro';
+import Flow from '../../components/Flow.astro';
+import Tiers from '../../components/Tiers.astro';
+import Wide from '../../components/Wide.astro';
+
+<Part n="01" title="Overview">
+RBP Finivis is a forex company licensed by the Reserve Bank of India (RBI), with two brands: **MEGO Forex**, which serves travellers, students and families, and **RBP Finivis**, which licenses its platform to other businesses as a white-label product. It also runs an internship programme that trains students as referral agents.
+
+That's three very different customer journeys inside one company. I set up a large part of their Zoho One environment, so each journey has its own structure without breaking the others — and so the data coming out of it can be trusted.
+</Part>
+
+<Part n="02" title="The challenge">
+- **Three journeys, one CRM.** A retail forex order, an institution onboarding onto a white-label platform and an intern becoming an agent have different stages, fields and compliance steps — identity checks (<abbr title="know your customer">KYC</abbr>), documents, payments.
+- **Data that looked right but wasn't.** Some picklist values displayed one label while storing a different value underneath, so any report on lead status counted the wrong stage.
+- **Decisions blocking the build.** Several set-up choices needed leadership sign-off before configuration could continue.
+</Part>
+
+<Wide title="The architecture" note="Simplified · no live data shown">
+<Tiers
+  tiers={[
+    { name: 'Capture', note: 'Where leads enter', items: ['Website forms', 'Live chat (SalesIQ)', 'WhatsApp (Interakt)', 'LinkedIn', 'Paid social', 'Referrals & walk-ins', 'Platform sign-ups'] },
+    { name: 'Leads', note: 'One module, routed by brand', groups: [
+      { name: 'Retail · MEGO Forex', items: ['Service interest', 'Channel', 'Hot-lead flag'] },
+      { name: 'White-label · RBP Finivis', items: ['Institution type', 'Integration mode', 'Partner account', 'NDA status'] },
+      { name: 'Internship', items: ['Cohort', 'Agent stage', 'Referring agent', 'WhatsApp campaign'] },
+    ] },
+    { name: 'Controls on every lead', note: 'Compliance & service levels', items: ['Consent: WhatsApp · SMS · email', 'Consent source, notice version, timestamp', 'First response time', 'SLA breach flag', 'Handled by: AI bot / human / escalated', 'Lead points'] },
+    { name: 'Deals', note: 'Three pipelines', items: ['Retail forex orders', 'White-label partner onboarding', 'Intern-agent sales'] },
+    { name: 'Programme modules', note: 'Custom modules I built', accent: true, items: ['Cohorts', 'Agents', 'Agent commissions', 'Agent payouts'] },
+    { name: 'Accounts & contacts', note: 'Partners and decision-makers', items: ['Company & licence type', 'Licence verification', 'Partnership stage', 'Decision-maker level', 'Outreach status'] },
+  ]}
+/>
+</Wide>
+
+<Part n="03" title="What I built">
+1. **Brand-specific layouts.** Retail, White-label and Internship layouts on Leads and Deals, each carrying only the fields and stages that journey needs.
+2. **Three pipelines,** each with its own stages and probabilities (below).
+3. **Custom modules for the agent programme** — Cohorts, Agents, Agent Commissions and Agent Payouts, linked so each commission record points to an agent and a deal. ([How the programme works](../whatsapp/).)
+4. **Capture and compliance fields** — channel and service interest, service-level (SLA) tracking, a record of whether a conversation was handled by the AI bot, a person or escalated, and a consent block that records channel, source, notice version and timestamp.
+5. **Operational structure across Zoho One** — project and work management, employee records, lead-capture forms and shared documents, alongside the CRM.
+</Part>
+
+<Wide title="Three pipelines" note="Stage names as configured · lost stages omitted">
+<Flow compact title="White-label partner onboarding" cols={7} steps={[
+  { label: 'Enquiry received' }, { label: 'Meeting' }, { label: 'Quote given' }, { label: 'Documents & KYC submitted' },
+  { label: 'Documents verified' }, { label: 'Payment received' }, { label: 'Activated' },
+]} />
+<div style="height:2.5rem" aria-hidden="true"></div>
+<Flow compact title="Retail forex orders" cols={7} steps={[
+  { label: 'Lead created' }, { label: 'Order placed' }, { label: 'Payment captured' }, { label: 'In fulfilment' }, { label: 'Fulfilled' },
+]} />
+<div style="height:2.5rem" aria-hidden="true"></div>
+<Flow compact title="Intern-agent sales" cols={7} steps={[
+  { label: 'Submitted' }, { label: 'Contacted' }, { label: 'Qualified' }, { label: 'Quote accepted' }, { label: 'Invoice issued' }, { label: 'Won' },
+]} />
+</Wide>
+
+<Part n="04" title="Making the data trustworthy">
+The most important fix wasn't visible. Several lead-status values showed one label to users while storing a different value in the database — a lead could appear to be at one stage while reports counted it as another.
+
+I audited the values, corrected the mismatches and verified them. Anything built on top from here — dashboards, automations, forecasts — starts from lead-status data that means what it says.
+</Part>
+
+<Part n="05" title="Getting decisions made">
+Configuration work kept stopping on questions only leadership could answer. Rather than raise them one by one, I wrote a single decision memo for the managing director: **eight decisions**, each with the options, a recommendation, the urgency and exactly what it was blocking.
+
+**Three were closed the same day,** and the remaining five moved to a tracked list of open decisions. It's a small document, but it's the difference between a rollout that drifts and one that moves.
+</Part>
+
+<Part n="06" title="How I worked: AI agents with checkpoints">
+For repetitive configuration and audits I used an AI browser agent working to a written brief: staged tasks, an evidence log of what it did, and a hard stop before anything irreversible. It waited at checkpoints for my explicit "proceed" before saving or submitting anything.
+
+That let me move faster on routine work while keeping a human decision on every change that mattered — the same standard I'd expect from anyone touching a production CRM.
+</Part>
+
+<Part n="07" title="Outcome">
+All three journeys now have their own structure inside one Zoho org: separate layouts and pipelines, a data model that links each commission to an agent and a deal, and consent and response-time fields on every lead. Automation and reporting are the next layer — built on data the business can trust.
+</Part>
+
+<Part n="08" title="Capabilities demonstrated">
+CRM architecture · data modelling · pipeline design · process design · data quality · compliance-aware operations · stakeholder decision-making · AI-assisted administration.
+</Part>

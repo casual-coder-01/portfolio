@@ -1,0 +1,99 @@
+---
+order: 3
+title: "A B2B outbound engine"
+cardTitle: "A B2B outbound engine"
+kicker: "Lead generation & outbound"
+summary: "The prospecting system for RBP Finivis's partner pipeline — market definition, list building, enrichment, sequenced outreach across LinkedIn and email, and scoring, with every stage recorded in the CRM."
+preview: "From Sales Navigator lists and a 379-query local search matrix to enriched contacts, sequenced outreach and scored replies in the CRM."
+meta:
+  - { label: Role, value: Designed & operated }
+  - { label: For, value: RBP Finivis partner & white-label pipeline }
+  - { label: Targets, value: "Fintechs · banks · travel, education & immigration businesses" }
+  - { label: Period, value: "2026" }
+tools: [LinkedIn Sales Navigator, Evaboot, SBL, PhantomBuster, Instantly, Interakt, Zoho CRM]
+tags: [Prospecting, Enrichment, Sequencing]
+visual: outbound
+seoDescription: "Case study — Abhinav Thakur's B2B outbound system using LinkedIn Sales Navigator, Evaboot, SBL, PhantomBuster, Instantly and Zoho CRM."
+---
+import Part from '../../components/Part.astro';
+import Flow from '../../components/Flow.astro';
+import Wide from '../../components/Wide.astro';
+import QueryMatrix from '../../components/QueryMatrix.astro';
+
+<Part n="01" title="Overview">
+RBP Finivis sells its white-label forex platform to a narrow set of buyers: fintechs; banks — authorised-dealer, cooperative, small finance and regional rural; and travel, education and immigration businesses whose customers need forex. I designed and ran the prospecting system that finds them, reaches the right person and records every step in the CRM.
+
+I didn't build the tools. The work is in how they're connected — what goes in, what comes out, and what happens to a reply.
+</Part>
+
+<Part n="02" title="The challenge">
+Generic lists don't work here. A target has to be the right kind of institution, often holding the right licence, and reached through a founder or senior decision-maker who already gets plenty of cold outreach.
+
+Volume without targeting burns the sending domain and the brand. So the engine is built around precision first, then scale.
+</Part>
+
+<Wide title="The engine" note="LinkedIn + email track">
+<Flow
+  cols={4}
+  steps={[
+    { label: 'Define the market', note: 'Segment, institution type, licence and region.' },
+    { label: 'Build the list', tool: 'Sales Navigator', note: 'Account lists and CEO / founder searches.' },
+    { label: 'Export & enrich', tool: 'Evaboot · PhantomBuster', note: 'Sales Nav export, profile enrichment, email finding and verification.' },
+    { label: 'Sequence', tool: 'SBL · Instantly', note: 'Paced LinkedIn touches (SBL) and multi-step email (Instantly).' },
+    { label: 'Replies', note: 'Tracked against the step that earned them.' },
+    { label: 'Qualify', note: 'Scored into hot, warm, qualified or low.' },
+    { label: 'CRM & follow-up', tool: 'Zoho CRM', note: 'Partnership stage, owner and next action.' },
+  ]}
+/>
+</Wide>
+
+<Part n="03" title="Design decisions">
+- **Work around the tool's limits.** Evaboot's email finder needs a person's name, not just a company domain — so company-level searches run through PhantomBuster first to identify the CEO or founder, then go to Evaboot.
+- **Verify before sending.** Addresses are verified before they enter a sequence, which protects deliverability for everything that follows.
+- **Check the licence where it matters.** Financial institutions are checked against the Reserve Bank of India's public lists of authorised dealers and money changers before outreach.
+- **A field per channel, plus one overall status.** The CRM tracks email sequence step (Email 1–5, stopped on reply or bounce), LinkedIn status (request, messages 1–3, replied) and an overall contact status through to *meeting booked* — so anyone can see exactly where a prospect is.
+</Part>
+
+<Part n="04" title="The local track: Google Maps">
+Not every good partner is on LinkedIn. Travel agents, study-abroad consultancies, IELTS centres and money changers are found where their customers find them — on Google Maps.
+
+For this track I built a search matrix pairing business types with specific localities, used to drive Google Maps extraction in PhantomBuster. The resulting lists feed sales calls, with WhatsApp follow-up through Interakt once a prospect agrees to it.
+</Part>
+
+<Wide>
+<QueryMatrix
+  total={379}
+  caption="Sample rows from the search matrix (public business categories and places — no personal data)."
+  rows={[
+    { what: 'IATA accredited travel agency', where: 'Andheri, Mumbai' },
+    { what: 'study abroad consultancy', where: 'Model Town, Ludhiana' },
+    { what: 'urban cooperative bank', where: 'Pune' },
+    { what: 'cross-border payments API startup', where: 'Koramangala, Bengaluru' },
+    { what: 'education finance NBFC', where: 'Connaught Place, Delhi' },
+    { what: 'IELTS coaching center', where: 'Banjara Hills, Hyderabad' },
+    { what: 'authorized money changer', where: 'Gachibowli, Hyderabad' },
+    { what: 'corporate travel agency', where: 'Nehru Place, Delhi' },
+  ]}
+/>
+<div style="height:3rem" aria-hidden="true"></div>
+<Flow
+  compact
+  title="Local track"
+  cols={5}
+  steps={[
+    { label: 'Search matrix', note: 'Business type × locality.' },
+    { label: 'Maps extraction', tool: 'PhantomBuster' },
+    { label: 'Clean list', note: 'Relevant, reachable businesses only.' },
+    { label: 'Sales call' },
+    { label: 'WhatsApp follow-up', tool: 'Interakt', note: 'Only after the prospect agrees.' },
+  ]}
+/>
+</Wide>
+
+<Part n="05" title="Outcome">
+A documented, repeatable engine: every stage has a tool and a matching field in the CRM, so a reply arrives with the sequence step and score that produced it. This case study covers the system design; it doesn't report campaign results.
+</Part>
+
+<Part n="06" title="Capabilities demonstrated">
+Ideal-customer definition · list building · data enrichment · deliverability hygiene · multichannel sequencing · lead scoring · CRM discipline · connecting tools into one workflow.
+</Part>

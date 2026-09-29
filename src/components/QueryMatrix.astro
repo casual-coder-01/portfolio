@@ -1,0 +1,31 @@
+---
+interface Props { total: number; rows: { what: string; where: string }[]; caption?: string }
+const { total, rows, caption } = Astro.props;
+---
+<figure class="qm" data-reveal>
+  <div class="qm__stat">
+    <span class="qm__num">{total}</span>
+    <span class="label">search queries · business type × locality</span>
+  </div>
+  <table class="qm__table">
+    <caption class="sr-only">Sample of the search matrix</caption>
+    <thead><tr><th scope="col" class="label label--caps">Business type</th><th scope="col" class="label label--caps">Locality</th></tr></thead>
+    <tbody>
+      {rows.map((r) => <tr><td>{r.what}</td><td>{r.where}</td></tr>)}
+      <tr class="qm__more"><td colspan="2" class="label">+ {total - rows.length} more</td></tr>
+    </tbody>
+  </table>
+  {caption && <figcaption class="label qm__cap">{caption}</figcaption>}
+</figure>
+<style>
+  .qm { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 1.5rem 3rem; align-items: start; border-top: 1px solid var(--ink); padding-top: 1.5rem; }
+  .qm__stat { display: grid; gap: 0.4rem; }
+  .qm__num { font-size: var(--fs-2xl); font-weight: 620; letter-spacing: -0.04em; line-height: 1; }
+  .qm__table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: var(--fs-xs); }
+  .qm__table th { text-align: left; padding: 0 0 0.6rem; font-weight: 400; }
+  .qm__table td { padding: 0.55rem 1rem 0.55rem 0; border-top: 1px solid var(--rule); color: var(--ink); vertical-align: top; }
+  .qm__table td + td { color: var(--ink-3); }
+  .qm__more td { color: var(--ink-3); }
+  .qm__cap { grid-column: 1 / -1; }
+  @media (max-width: 48rem) { .qm { grid-template-columns: 1fr; } }
+</style>

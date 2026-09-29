@@ -1,0 +1,24 @@
+---
+interface Props { rules: { title: string; body: string }[]; title?: string }
+const { rules, title } = Astro.props;
+---
+<figure class="rules" data-reveal>
+  {title && <figcaption class="label label--caps rules__title">{title}</figcaption>}
+  <ol class="rules__list" role="list">
+    {rules.map((r, i) => (
+      <li class="rule">
+        <span class="label">R{String(i + 1).padStart(2, '0')}</span>
+        <p class="rule__title">{r.title}</p>
+        <p class="rule__body">{r.body}</p>
+      </li>
+    ))}
+  </ol>
+</figure>
+<style>
+  .rules { margin: 0; }
+  .rules__title { display: block; margin-bottom: 1.25rem; }
+  .rules__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 0; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+  .rule { display: grid; gap: 0.45rem; align-content: start; padding: 1.25rem 1.5rem 1.5rem 0; border-bottom: 1px solid var(--rule); }
+  .rule__title { font-weight: 600; font-size: var(--fs-md); line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); }
+  .rule__body { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.55; }
+</style>

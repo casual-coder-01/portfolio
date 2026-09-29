@@ -1,0 +1,105 @@
+---
+order: 5
+title: "AI creative production for a regulated brand"
+cardTitle: "AI creative production"
+kicker: "Creative direction & production"
+summary: "Two complete campaigns and short-form video for RBP Finivis and MEGO Forex — produced with generative AI, art-directed by hand, and checked against the brand's compliance rules before anything ships."
+preview: "Two complete campaigns and short-form video, produced with generative AI inside a regulated category's rules."
+meta:
+  - { label: Role, value: Creative direction & production }
+  - { label: Brands, value: RBP Finivis (B2B) · MEGO Forex (B2C) }
+  - { label: Formats, value: 4:5 · 2:3 · 9:16 · 16:9 }
+  - { label: Period, value: "2026" }
+tools: [Higgsfield, Google Flow, ElevenLabs, ChatGPT, Canva]
+tags: [Creative direction, Generative AI, Brand systems]
+visual: creative
+tone: night
+seoDescription: "AI creative production by Abhinav Thakur — white-label campaign for RBP Finivis, service campaign for MEGO Forex, and short-form video made with Higgsfield, Google Flow and ElevenLabs."
+---
+import Part from '../../components/Part.astro';
+import Flow from '../../components/Flow.astro';
+import Wide from '../../components/Wide.astro';
+import Gallery from '../../components/Gallery.astro';
+import VideoCard from '../../components/VideoCard.astro';
+import Rules from '../../components/Rules.astro';
+import { rbpCampaign, megoCampaign, videos } from '../../data/creative';
+
+<Part n="01" title="Overview">
+I produce campaign creative and short-form video for both brands with generative AI — concept, prompting, compositing, typography and final edit. Models do the rendering; the decisions about idea, composition, copy and what's allowed to ship are mine.
+
+Financial services is a regulated category, so every piece sits inside hard rules: exact licence wording, an approved list of claims, and a consistent layout across every post.
+</Part>
+
+<Part n="02" title="RBP Finivis — “Your brand on top. Our engine underneath.”">
+A white-label platform is invisible by design: the partner's brand is what customers see. The campaign turns that idea into imagery — a gloved hand delivering a sealed letter, a cufflink under a tailored sleeve, a lotus above still water.
+
+One line of copy per piece, navy and gold, and the quiet confidence of something built to sit underneath someone else's name. The audience is B2B: founders and leaders at fintechs, banks and travel businesses.
+</Part>
+
+<Wide>
+<Gallery items={rbpCampaign} label="RBP Finivis white-label campaign" rowHeight={430} eagerFirst />
+</Wide>
+
+<Part n="03" title="MEGO Forex — “Same horizons. Closer now.”">
+The consumer brand covers a range of services, from outward remittance and forex cards to insurance and education-loan facilitation through lending partners. The job was a system rather than a set of one-offs: **one service, one message and one call to action per post**, with the logo, trust line and licence wording in the same place every time.
+
+The imagery carries the emotion — travel, study, family — while the layout does the work of making a regulated product feel simple and trustworthy.
+</Part>
+
+<Wide>
+<Gallery items={megoCampaign} label="MEGO Forex services campaign" layout="grid" cols={5} />
+</Wide>
+
+<Part n="04" title="Motion">
+Short-form video for reels and stories, plus spec concepts that test pacing, texture and product moments. Videos load only when you play them.
+</Part>
+
+<Wide>
+<div class="video-grid">
+  <VideoCard video={videos[0]} featured />
+  <div class="video-grid__side">
+    <VideoCard video={videos[1]} />
+    <VideoCard video={videos[2]} />
+  </div>
+</div>
+</Wide>
+
+<Part n="05" title="The rules behind the work">
+Generative tools make it easy to produce a lot of plausible, off-brand work. I keep a written set of creative rules, added to whenever feedback exposes a gap, that every piece has to pass. A selection:
+</Part>
+
+<Wide>
+<Rules
+  rules={[
+    { title: 'One message, one call to action.', body: 'Each post does one job. Everything else is cut.' },
+    { title: 'No painted buttons in static ads.', body: 'Paid social renders its own CTA button under the creative. A drawn one duplicates it and looks amateur.' },
+    { title: 'Compliance copy is verbatim.', body: 'The licence line appears exactly as registered on every commercial post. Rates are marked indicative.' },
+    { title: 'Claims come from an approved list.', body: 'Never “guaranteed”, “best rates” or “No. 1” — “competitive rates” instead.' },
+    { title: 'Facilitated products say so.', body: 'Education loans are “through our lending partners”, never “our loans”.' },
+    { title: 'Make the data visual.', body: 'A proportion drawn to scale lands harder than a percentage set in type.' },
+    { title: 'No template-generated layouts.', body: 'Stock-template design tools ignore the palette, grid and tone. Layouts are built under direct control.' },
+    { title: 'Numbers need sign-off.', body: 'Any creative containing a figure gets written approval before it’s scheduled.' },
+  ]}
+/>
+</Wide>
+
+<Wide title="Production pipeline" note="Voice-over campaigns">
+<Flow
+  compact
+  cols={5}
+  steps={[
+    { label: 'Brief & script' },
+    { label: 'Compliance check', note: 'Claims, licence line, product labels.' },
+    { label: 'Voice', tool: 'ElevenLabs', note: 'A fixed registry of synthetic brand voices.' },
+    { label: 'Stills', tool: 'Higgsfield · ChatGPT' },
+    { label: 'Video', tool: 'Higgsfield · Google Flow' },
+    { label: 'Edit & typography' },
+    { label: 'QA', note: 'Spelling, legibility, AI artefacts.' },
+    { label: 'Asset register', note: 'Logged for reuse.' },
+  ]}
+/>
+</Wide>
+
+<Part n="06" title="Capabilities demonstrated">
+Creative direction · campaign concepting · generative image and video production · brand systems · copywriting · compliance-aware marketing · quality control.
+</Part>

@@ -1,0 +1,62 @@
+---
+/**
+ * Shows a real WhatsApp template body with its variables highlighted.
+ * Variables are written as {{n}} in the text prop.
+ */
+interface Props { name: string; body: string; button?: string; footer?: string; legend?: { v: string; means: string }[]; compact?: boolean }
+const { name, body, button, footer, legend = [], compact = false } = Astro.props;
+const parts = body.split(/(\{\{\d+\}\})/g);
+const paragraphs: string[][] = [];
+let current: string[] = [];
+for (const p of parts) {
+  const chunks = p.split('\n\n');
+  chunks.forEach((c, i) => {
+    if (i > 0) { paragraphs.push(current); current = []; }
+    if (c) current.push(c);
+  });
+}
+paragraphs.push(current);
+---
+<figure class:list={['tpl', { 'tpl--compact': compact }]} data-reveal>
+  <div class="tpl__phone">
+    <p class="tpl__name label">{name}</p>
+    <div class="tpl__bubble">
+      {paragraphs.map((para) => (
+        <p>{para.map((seg) => (/^\{\{\d+\}\}$/.test(seg) ? <mark class="tpl__var">{seg}</mark> : seg))}</p>
+      ))}
+      {footer && <p class="tpl__footer">{footer}</p>}
+    </div>
+    {button && <p class="tpl__button">{button}</p>}
+  </div>
+  {legend.length > 0 && (
+    <figcaption class="tpl__legend">
+      <p class="label label--caps">Variables</p>
+      <dl>
+        {legend.map((l) => (<><dt><mark class="tpl__var">{l.v}</mark></dt><dd>{l.means}</dd></>))}
+      </dl>
+    </figcaption>
+  )}
+</figure>
+<style>
+  .tpl { margin: 0; display: grid; gap: 1.75rem; grid-template-columns: minmax(0, 24rem) minmax(0, 1fr); align-items: start; }
+  .tpl--compact { grid-template-columns: 1fr; }
+  .tpl__phone { background: #e9e3d8; border-radius: 14px; padding: 1rem; border: 1px solid var(--rule); }
+  .tpl__name { margin-bottom: 0.6rem; color: #5f5a50; }
+  .tpl__bubble {
+    background: #fff; color: #1d1d1b; border-radius: 4px 12px 12px 12px; padding: 0.85rem 0.95rem 0.7rem;
+    font-size: 0.9rem; line-height: 1.5; box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  }
+  .tpl__bubble p + p { margin-top: 0.6em; }
+  .tpl__footer { font-size: 0.78rem; color: #767168; }
+  .tpl__button {
+    margin-top: 0.4rem; background: #fff; border-radius: 10px; text-align: center; padding: 0.6rem;
+    font-size: 0.88rem; font-weight: 600; color: #1f5f8b;
+  }
+  .tpl__var {
+    font-family: var(--font-mono); font-size: 0.82em; background: color-mix(in srgb, var(--accent) 14%, #fff);
+    color: #8c2c0c; padding: 0.05em 0.3em; border-radius: 3px;
+  }
+  .tpl__legend dl { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem 1rem; margin-top: 0.9rem; align-items: baseline; }
+  .tpl__legend dd { margin: 0; color: var(--ink-2); font-size: var(--fs-sm); }
+  @media (max-width: 48rem) { .tpl { grid-template-columns: 1fr; } }
+</style>

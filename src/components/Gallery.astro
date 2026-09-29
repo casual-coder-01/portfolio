@@ -1,0 +1,75 @@
+---
+/**
+ * Justified gallery: every row fills the width at (roughly) equal height,
+ * so mixed aspect ratios never get cropped. Click opens the lightbox.
+ */
+import { Picture, getImage } from 'astro:assets';
+import type { CreativeItem } from '../data/creative';
+
+interface Props { items: CreativeItem[]; rowHeight?: number; label: string; eagerFirst?: boolean; layout?: 'justified' | 'grid'; cols?: number }
+const { items, rowHeight = 400, label, eagerFirst = false, layout = 'justified', cols = 5 } = Astro.props;
+
+const prepared = await Promise.all(
+  items.map(async (it) => {
+    const full = await getImage({ src: it.src, width: Math.min(it.src.width, 1600), format: 'webp', quality: 86 });
+    return { ...it, full: full.src, ratio: it.src.width / it.src.height };
+  }),
+);
+---
+<ul class:list={['jg', { 'jg--grid': layout === 'grid' }]} role="list" style={`--row-h:${rowHeight}px;--cols:${cols}`} aria-label={label}>
+  {prepared.map((it, i) => (
+    <li class="jg__item" style={`--r:${it.ratio.toFixed(4)}`} data-reveal>
+      <a
+        class="jg__link"
+        href={it.full}
+        data-lb
+        data-lb-caption={`${it.title} — ${it.format}`}
+        data-lb-alt={it.alt}
+      >
+        <Picture
+          src={it.src}
+          alt={it.alt}
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          widths={[360, 540, 760, 1000]}
+          sizes={layout === 'grid' ? `(max-width: 40rem) 50vw, (max-width: 60rem) 33vw, ${Math.round(100 / cols)}vw` : `(max-width: 40rem) 50vw, ${Math.round(rowHeight * it.ratio * 1.1)}px`}
+          loading={eagerFirst && i === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          quality={80}
+        />
+        <span class="sr-only">(view larger)</span>
+      </a>
+      <p class="jg__cap label"><span>{it.title}</span><span>{it.format}</span></p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .jg {
+    display: flex; flex-wrap: wrap; gap: clamp(0.75rem, 1.6vw, 1.5rem);
+    margin: 0; padding: 0; list-style: none;
+  }
+  .jg::after { content: ''; flex-grow: 999999; }
+  .jg__item {
+    flex: calc(var(--r) * 100) 1 calc(var(--r) * var(--row-h));
+    min-width: 0; display: grid; gap: 0.55rem; align-content: start;
+  }
+  .jg__link { display: block; overflow: hidden; background: var(--night-2); border-radius: var(--radius); }
+  .jg__link :global(img) {
+    width: 100%; height: auto; aspect-ratio: var(--r); object-fit: cover;
+    transition: transform 0.9s var(--ease), opacity 0.4s var(--ease);
+  }
+  .jg__link:hover :global(img) { transform: scale(1.015); }
+  .jg__cap { display: flex; justify-content: space-between; gap: 0.75rem; }
+  .jg__cap span:last-child { color: var(--ink-3); text-align: right; }
+
+  .jg--grid { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+  .jg--grid::after { display: none; }
+  @media (max-width: 60rem) { .jg { --row-h: 300px !important; } .jg--grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 40rem) {
+    .jg { --row-h: 200px !important; }
+    .jg--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .jg__cap { flex-direction: column; gap: 0.1rem; }
+    .jg__cap span:last-child { text-align: left; }
+  }
+</style>
