@@ -1,38 +1,93 @@
 ---
 import { getCollection } from 'astro:content';
+import { Picture, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import WorkVisual from '../components/WorkVisual.astro';
-import Placeholder from '../components/Placeholder.astro';
+import VideoCard from '../components/VideoCard.astro';
+import Lightbox from '../components/Lightbox.astro';
+import portrait from '../assets/me/abhinav-portrait.jpg';
 import { site, role } from '../data/site';
-import { proof, scope, toolkit, about } from '../data/profile';
+import { stats, marquee, timeline, toolkit, about } from '../data/profile';
+import { rbpCampaign, megoCampaign, videos } from '../data/creative';
 import { url } from '../lib/url';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+// bento placement per case study
+const place: Record<string, string> = {
+  'ai-creative': 'b-feature',
+  zoho: 'b-tall',
+  outbound: 'b-wide',
+  whatsapp: 'b-half',
+  'business-development': 'b-half',
+};
+const bentoOrder = ['ai-creative', 'zoho', 'outbound', 'business-development', 'whatsapp'];
+const bento = bentoOrder.map((id) => work.find((w) => w.id === id)!).filter(Boolean);
+
+// studio rail: interleave the two campaigns
+const rail = [];
+const max = Math.max(rbpCampaign.length, megoCampaign.length);
+for (let i = 0; i < max; i++) {
+  if (rbpCampaign[i]) rail.push({ ...rbpCampaign[i], brand: 'RBP Finivis' });
+  if (megoCampaign[i]) rail.push({ ...megoCampaign[i], brand: 'MEGO Forex' });
+}
+const railFull = await Promise.all(rail.map(async (r) => (await getImage({ src: r.src, width: Math.min(r.src.width, 1600), format: 'webp', quality: 86 })).src));
+
+// time in role, computed at build
+const start = new Date(role.start);
+const months = Math.max(0, (new Date().getFullYear() - start.getFullYear()) * 12 + new Date().getMonth() - start.getMonth());
+const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
 ---
 <Base>
   <!-- ─────────────── HERO ─────────────── -->
-  <section class="hero wrap" id="top" aria-labelledby="hero-title">
-    <p class="label hero__label" data-reveal>
-      <span>{site.role}</span>
-      <span class="hero__loc">Melbourne</span>
-    </p>
-    <h1 id="hero-title" class="display hero__title balance" data-reveal style="--d:60ms">
-      <span class="hl">Business development,</span> <span class="hl serif">with the systems</span> <span class="hl">built&nbsp;in.</span>
-    </h1>
-    <div class="hero__foot" data-reveal style="--d:140ms">
-      <p class="lede pretty">
-        I talk to prospective B2B clients about SaaS, BaaS and payment infrastructure — then build the CRM, outbound and AI-driven marketing that keeps the pipeline moving. Currently at RBP Finivis, a two-brand Indian fintech.
-      </p>
-      <div class="hero__cta">
-        <a class="btn btn--down" href="#work">Selected work <span class="arrow" aria-hidden="true">↓</span></a>
-        <a class="btn btn--ghost" href="#contact">Get in touch</a>
+  <section class="hero" id="top" aria-labelledby="hero-name">
+    <div class="wrap hero__top label" data-reveal>
+      <span>Portfolio — {new Date().getFullYear()}</span>
+      <span class="hero__status"><span class="dot" aria-hidden="true"></span>Open to part-time roles · Melbourne</span>
+    </div>
+
+    <div class="wrap hero__stage">
+      <h1 id="hero-name" class="display hero__name">
+        <span class="hero__l1" data-reveal>Abhinav</span>
+        <span class="hero__l2" data-reveal style="--d:120ms">Thakur</span>
+      </h1>
+
+      <figure class="hero__photo" data-reveal style="--d:200ms">
+        <Picture src={portrait} alt="Abhinav Thakur on a rooftop in Melbourne at night, city skyline behind him" formats={['avif', 'webp']} fallbackFormat="webp" widths={[400, 640, 900]} sizes="(max-width: 48rem) 92vw, 32vw" loading="eager" fetchpriority="high" quality={82} />
+        <figcaption class="label hero__cap">Melbourne · after hours</figcaption>
+      </figure>
+
+      <div class="hero__copy" data-reveal style="--d:280ms">
+        <p class="label label--caps hero__role">{role.title} · {role.company}</p>
+        <p class="hero__statement balance">Business development, <span class="serif gold">with the systems</span> built in.</p>
+        <p class="lede pretty">
+          I talk to prospective B2B clients about SaaS, BaaS and payment infrastructure — then build the CRM, outbound, messaging and AI-made marketing that keeps the pipeline moving.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--down" href="#work">See the work <span class="arrow" aria-hidden="true">↓</span></a>
+          <a class="btn btn--ghost" href="#contact">Get in touch</a>
+        </div>
+        <dl class="hero__facts">
+          <div><dt class="label label--caps">In role</dt><dd>{tenure}</dd></div>
+          <div><dt class="label label--caps">Markets</dt><dd>France · Canada · Malaysia · UAE</dd></div>
+          <div><dt class="label label--caps">Based</dt><dd>Melbourne, AU</dd></div>
+        </dl>
       </div>
     </div>
-    <ul class="proof" role="list" aria-label="At a glance" data-reveal style="--d:220ms">
-      {proof.map((p) => (
-        <li class="proof__item">
-          <span class="label label--caps">{p.k}</span>
-          <span class="proof__v">{p.v}</span>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      {[...marquee, ...marquee].map((m) => <span class="marquee__item">{m}</span>)}
+    </div>
+  </div>
+
+  <!-- ─────────────── NUMBERS ─────────────── -->
+  <section class="wrap stats" aria-label="At a glance">
+    <ul class="stats__list" role="list">
+      {stats.map((s, i) => (
+        <li class="stats__item" data-reveal style={`--d:${i * 80}ms`}>
+          <span class="stats__n">{s.n}</span>
+          <span class="stats__l">{s.label}</span>
         </li>
       ))}
     </ul>
@@ -41,89 +96,113 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   <!-- ─────────────── WORK ─────────────── -->
   <section class="section work" id="work" aria-labelledby="work-title">
     <div class="wrap">
-      <header class="sec-head">
-        <div class="sec-head__top">
-          <h2 id="work-title" class="label label--caps">Selected work</h2>
-          <span class="label">05 case studies</span>
+      <header class="sec-title">
+        <div class="sec-title__row">
+          <h2 id="work-title" class="sec-title__big">Selected <span class="serif">work</span></h2>
+          <p class="label work__count">05 case studies · real systems, real brands</p>
         </div>
-        <p class="h2 work__intro balance">Five projects, each one a working part of how a business finds, converts and serves its customers.</p>
       </header>
-    </div>
 
-    <ol class="work__list" role="list">
-      {work.map((w, i) => {
-        const href = url(`/work/${w.id}/`);
-        const night = w.data.tone === 'night';
-        return (
-          <li class:list={['wrow', { night }]}>
-            <div class="wrap wrow__inner">
-              <div class="wrow__text" data-reveal>
-                <p class="label wrow__num">{String(w.data.order).padStart(2, '0')} · {w.data.kicker}</p>
-                <h3 class="h2 wrow__title balance"><a href={href}>{w.data.cardTitle}</a></h3>
-                <p class="wrow__preview pretty">{w.data.preview}</p>
-                <ul class="tags" role="list">{w.data.tags.map((t) => <li class="tag">{t}</li>)}</ul>
-                <a class="wrow__more" href={href} aria-hidden="true" tabindex="-1">Read case study <span class="arrow">→</span></a>
-              </div>
-              <a class="wrow__visual" href={href} aria-hidden="true" tabindex="-1" data-reveal style={`--d:${80}ms`}>
-                <WorkVisual kind={w.data.visual} />
+      <ul class="bento" role="list">
+        {bento.map((w, i) => {
+          const href = url(`/work/${w.id}/`);
+          return (
+            <li class:list={['card', place[w.id]]} data-reveal style={`--d:${(i % 3) * 90}ms`}>
+              <a class="card__link" href={href}>
+                <div class="card__head">
+                  <span class="label">{String(w.data.order).padStart(2, '0')} — {w.data.kicker}</span>
+                  <span class="card__arrow" aria-hidden="true">↗</span>
+                </div>
+                <h3 class="card__title balance">{w.data.cardTitle}</h3>
+                <p class="card__preview pretty">{w.data.preview}</p>
+                <div class="card__visual" aria-hidden="true"><WorkVisual kind={w.data.visual} mosaic={w.id === 'ai-creative'} /></div>
+                <ul class="tags card__tags" role="list">{w.data.tags.map((t) => <li class="tag">{t}</li>)}</ul>
               </a>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   </section>
 
-  <!-- ─────────────── EXPERIENCE ─────────────── -->
-  <section class="section exp" id="experience" aria-labelledby="exp-title">
+  <!-- ─────────────── STUDIO RAIL ─────────────── -->
+  <section class="studio" id="studio" aria-labelledby="studio-title">
     <div class="wrap">
-      <header class="sec-head">
-        <div class="sec-head__top">
-          <h2 id="exp-title" class="label label--caps">Experience</h2>
-          <span class="label">What the role covers</span>
+      <header class="sec-title">
+        <div class="sec-title__row">
+          <h2 id="studio-title" class="sec-title__big">The <span class="serif">studio</span></h2>
+          <div class="studio__ctrl">
+            <p class="label">Campaign creative I produced with AI · tap to enlarge</p>
+            <div class="studio__btns">
+              <button type="button" class="studio__btn" data-rail-prev aria-label="Scroll creative left">←</button>
+              <button type="button" class="studio__btn" data-rail-next aria-label="Scroll creative right">→</button>
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+    <ul class="rail" role="list" data-rail tabindex="0" aria-label="Campaign creative">
+      {rail.map((r, i) => (
+        <li class="rail__item" style={`--r:${(r.src.width / r.src.height).toFixed(4)}`}>
+          <a href={railFull[i]} data-lb data-lb-caption={`${r.brand} — ${r.title}`} data-lb-alt={r.alt} class="rail__link">
+            <Picture src={r.src} alt={r.alt} formats={['avif', 'webp']} fallbackFormat="webp" widths={[360, 540, 760]} sizes="(max-width: 48rem) 60vw, 26vw" loading="lazy" decoding="async" quality={80} />
+            <span class="sr-only">(view larger)</span>
+          </a>
+          <p class="rail__cap label"><span>{r.brand}</span><span>{r.title}</span></p>
+        </li>
+      ))}
+    </ul>
+    <div class="wrap studio__more">
+      <a class="btn btn--ghost" href={url('/work/ai-creative/')}>How it was made <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- ─────────────── REEL ─────────────── -->
+  <section class="section reel" id="reel" aria-labelledby="reel-title">
+    <div class="wrap">
+      <header class="sec-title">
+        <div class="sec-title__row">
+          <h2 id="reel-title" class="sec-title__big">In <span class="serif">motion</span></h2>
+          <p class="label">Films and ads · press play to load</p>
+        </div>
+      </header>
+      <div class="video-grid">
+        {videos.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+      </div>
+      <p class="reel__more"><a class="link label" href={url('/work/ai-creative/#motion')}>All videos in the creative case study →</a></p>
+    </div>
+  </section>
+
+  <!-- ─────────────── EXPERIENCE (cream) ─────────────── -->
+  <section class="section cream exp" id="experience" aria-labelledby="exp-title">
+    <div class="wrap">
+      <header class="sec-title">
+        <div class="sec-title__row">
+          <h2 id="exp-title" class="sec-title__big">Exper<span class="serif">ience</span></h2>
+          <p class="label">Royal Bank Pacific · RBP Finivis · MEGO Forex</p>
         </div>
       </header>
 
-      <div class="grid exp__role">
-        <div class="exp__who" data-reveal>
-          <h3 class="h3">{role.company}</h3>
-          <p class="label">{role.brands}</p>
-          <dl class="exp__facts">
-            <div><dt class="label label--caps">Title</dt><dd>{role.title ?? <Placeholder what="official title" />}</dd></div>
-            <div><dt class="label label--caps">Dates</dt><dd>{role.period ?? <Placeholder what="start month & year – present" />}</dd></div>
-          </dl>
-        </div>
-        <div class="exp__what" data-reveal style="--d:80ms">
-          <p class="lede pretty">
-            RBP Finivis is a forex company licensed by the Reserve Bank of India, with two brands: a white-label forex platform sold to businesses, and MEGO Forex for consumers. My work started in business development and grew to cover the systems around it — the CRM, outbound, messaging and marketing.
-          </p>
-          <ol class="scope" role="list">
-            {scope.map((s, i) => (
-              <li class="scope__item">
-                <span class="label">{String(i + 1).padStart(2, '0')}</span>
-                <h4 class="h4">{s.title}</h4>
-                <p class="scope__body">{s.body}</p>
-                <a class="link label" href={url(s.link)}>Related case study<span class="sr-only">: {s.title}</span> →</a>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
+      <ol class="tl" role="list">
+        {timeline.map((t, i) => (
+          <li class="tl__item" data-reveal style={`--d:${i * 100}ms`}>
+            <p class="tl__period label label--caps">{t.period}</p>
+            <div class="tl__body">
+              <h3 class="tl__title">{t.title}</h3>
+              <p class="tl__org">{t.org}</p>
+              <ul class="tl__points" role="list">{t.points.map((p) => <li>{p}</li>)}</ul>
+            </div>
+          </li>
+        ))}
+      </ol>
 
-      <div class="kit" aria-labelledby="kit-title">
-        <div class="sec-head__top kit__head">
-          <h3 id="kit-title" class="label label--caps">Toolkit</h3>
-          <span class="label">What each tool is for, not how much I like it</span>
-        </div>
-        <div class="kit__grid">
+      <div class="kit">
+        <p class="label label--caps kit__label">Toolkit</p>
+        <div class="kit__groups">
           {toolkit.map((g) => (
-            <div class="kit__group" data-reveal>
-              <p class="h4 kit__name">{g.group}</p>
-              <ul role="list">
-                {g.tools.map((t) => (
-                  <li><span class="kit__tool">{t.name}</span><span class="kit__use">{t.use}</span></li>
-                ))}
-              </ul>
+            <div class="kit__group">
+              <p class="kit__name">{g.group}</p>
+              <ul class="kit__chips" role="list">{g.tools.map((t) => <li>{t}</li>)}</ul>
             </div>
           ))}
         </div>
@@ -133,151 +212,244 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
 
   <!-- ─────────────── ABOUT ─────────────── -->
   <section class="section about" id="about" aria-labelledby="about-title">
-    <div class="wrap grid">
-      <div class="about__head">
-        <div class="sec-head__top"><h2 id="about-title" class="label label--caps">About</h2></div>
-      </div>
+    <div class="wrap about__grid">
+      <h2 id="about-title" class="sec-title__big about__title">About</h2>
       <div class="about__body" data-reveal>
-        <p class="h3 balance">{about[0]}</p>
-        {about.slice(1).map((p) => <p class="about__p pretty">{p}</p>)}
+        <p class="about__lead serif balance">I sell — then I build the system that makes the next sale easier.</p>
+        {about.map((p) => <p class="about__p pretty">{p}</p>)}
       </div>
     </div>
   </section>
 
   <!-- ─────────────── CONTACT ─────────────── -->
-  <section class="section contact night" id="contact" aria-labelledby="contact-title">
+  <section class="section contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
-      <p class="label label--caps">Contact</p>
-      <h2 id="contact-title" class="display contact__title">Let’s <span class="serif">talk.</span></h2>
+      <h2 id="contact-title" class="display contact__title">Let’s <span class="serif gold">talk.</span></h2>
       <p class="lede contact__avail pretty">{site.availability}</p>
       <ul class="contact__list" role="list">
-        <li>
-          <span class="label label--caps">Email</span>
-          {site.email ? <a class="contact__link" href={`mailto:${site.email}`}>{site.email}</a> : <Placeholder what="email address" />}
-        </li>
-        <li>
-          <span class="label label--caps">LinkedIn</span>
-          {site.linkedin
-            ? <a class="contact__link" href={site.linkedin} rel="me noopener" target="_blank">{site.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
-            : <Placeholder what="LinkedIn URL" />}
-        </li>
-        {site.github && (
+        {site.email && (
           <li>
-            <span class="label label--caps">GitHub</span>
-            <a class="contact__link" href={site.github} rel="me noopener" target="_blank">{site.github.replace(/^https?:\/\//, '')}</a>
+            <span class="label label--caps">Email</span>
+            <a class="contact__link" href={`mailto:${site.email}`}>{site.email}</a>
+            <button type="button" class="contact__copy label" data-copy={site.email}>Copy</button>
+          </li>
+        )}
+        {site.phone && (
+          <li>
+            <span class="label label--caps">Phone</span>
+            <a class="contact__link" href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a>
+            <button type="button" class="contact__copy label" data-copy={site.phone}>Copy</button>
+          </li>
+        )}
+        {site.linkedin && (
+          <li>
+            <span class="label label--caps">LinkedIn</span>
+            <a class="contact__link" href={site.linkedin} rel="me noopener" target="_blank">{site.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+            <span></span>
           </li>
         )}
       </ul>
       {site.resumeAvailable && (
-        <p class="contact__cv"><a class="btn" href={url(site.resumePath)} download>Download résumé (PDF) <span class="arrow" aria-hidden="true">↓</span></a></p>
+        <p class="contact__cv"><a class="btn" href={url(site.resumePath)} download>Download résumé <span class="arrow" aria-hidden="true">↓</span></a></p>
       )}
     </div>
   </section>
+
+  <Lightbox />
 </Base>
+
+<script>
+  // studio rail buttons
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  const step = () => (rail ? rail.clientWidth * 0.7 : 0);
+  document.querySelector('[data-rail-prev]')?.addEventListener('click', () => rail?.scrollBy({ left: -step(), behavior: 'smooth' }));
+  document.querySelector('[data-rail-next]')?.addEventListener('click', () => rail?.scrollBy({ left: step(), behavior: 'smooth' }));
+  // copy buttons
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = 'Copied';
+      } catch {
+        b.textContent = 'Select & copy';
+      }
+      setTimeout(() => (b.textContent = 'Copy'), 1800);
+    }),
+  );
+</script>
 
 <style>
   /* HERO */
-  .hero { padding-top: clamp(2.5rem, 7vw, 6.5rem); padding-bottom: clamp(1rem, 3vw, 2rem); display: grid; gap: clamp(1.75rem, 3.5vw, 3rem); }
-  .hero__label { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--ink); padding-top: 0.9rem; }
-  .hero__title { max-width: 15ch; }
-  @media (min-width: 48rem) { .hero__title { max-width: none; } .hero__title .hl { display: block; } }
-  .hero__title .serif { font-weight: 400; letter-spacing: -0.03em; }
-  .hero__foot { display: grid; gap: 1.75rem; grid-template-columns: minmax(0, 1fr); align-items: end; }
-  .hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-  @media (min-width: 60rem) {
-    .hero__foot { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
-    .hero__cta { justify-content: flex-end; }
+  .hero { padding-top: clamp(1.5rem, 4vw, 3rem); overflow: hidden; }
+  .hero__top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: clamp(1.5rem, 4vw, 3rem); }
+  .hero__status { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--text-2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #5fd38d; box-shadow: 0 0 0 0 rgba(95, 211, 141, 0.6); animation: pulse 2.4s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(95, 211, 141, 0); } 100% { box-shadow: 0 0 0 0 rgba(95, 211, 141, 0); } }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+
+  .hero__stage { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 2vw, 2rem); position: relative; }
+  .hero__name { grid-column: 1 / -1; grid-row: 1; display: grid; position: relative; z-index: 2; pointer-events: none; }
+  .hero__l1 { justify-self: start; }
+  .hero__l2 { justify-self: end; color: transparent; -webkit-text-stroke: clamp(1px, 0.18vw, 2.5px) var(--text); }
+  .hero__photo {
+    grid-column: 1 / span 5; grid-row: 2; position: relative; z-index: 1;
+    margin-top: calc(var(--fs-display) * -0.86); border-radius: 8px; overflow: hidden;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
   }
-  .proof { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: clamp(1rem, 3vw, 2.5rem) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
-  .proof__item { display: grid; gap: 0.4rem; align-content: start; padding: 1rem 1.25rem 0 0; }
-  .proof__item + .proof__item { border-left: 1px solid var(--rule); padding-left: 1.25rem; }
-  .proof__v { font-size: var(--fs-sm); line-height: 1.45; color: var(--ink-2); }
-  @media (max-width: 60rem) {
-    .proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .proof__item { padding: 1rem 1rem 1rem 0; border-bottom: 1px solid var(--rule); }
-    .proof__item + .proof__item { border-left: 0; padding-left: 0; }
-    .proof__item:nth-child(even) { border-left: 1px solid var(--rule); padding-left: 1rem; }
-    .proof__item:last-child { grid-column: 1 / -1; border-left: 0; padding-left: 0; }
+  .hero__photo :global(img) { width: 100%; height: auto; aspect-ratio: 743 / 1097; object-fit: cover; filter: saturate(1.05) contrast(1.03); }
+  .hero__photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(7, 8, 11, 0.55)); pointer-events: none; }
+  .hero__cap { position: absolute; left: 1rem; bottom: 0.9rem; z-index: 2; color: var(--text); }
+  .hero__copy { grid-column: 7 / -1; grid-row: 2; display: grid; gap: 1.5rem; align-content: start; padding-top: clamp(2rem, 5vw, 4.5rem); }
+  .hero__role { color: var(--gold); }
+  .hero__statement { font-family: var(--font-display); font-stretch: 110%; font-weight: 700; font-size: var(--fs-xl); line-height: 1.02; letter-spacing: -0.03em; }
+  .hero__statement .serif { font-size: 1.08em; }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .hero__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; border-top: 1px solid var(--line); padding-top: 1.25rem; margin-top: 0.5rem; }
+  .hero__facts div { display: grid; gap: 0.35rem; }
+  .hero__facts dd { margin: 0; font-size: var(--fs-sm); color: var(--text); }
+  @media (max-width: 56rem) {
+    .hero__photo { grid-column: 1 / span 6; }
+    .hero__copy { grid-column: 7 / -1; }
+  }
+  @media (max-width: 44rem) {
+    .hero__photo { grid-column: 1 / -1; margin-top: 1.25rem; }
+    .hero__copy { grid-column: 1 / -1; grid-row: 3; padding-top: 2rem; }
+    .hero__photo :global(img) { aspect-ratio: 4 / 4.6; object-position: 60% 30%; }
+    .hero__facts { grid-template-columns: 1fr 1fr; }
+    .hero__facts div:last-child { grid-column: 1 / -1; }
+  }
+  .hero + .marquee { margin-top: clamp(3rem, 7vw, 6rem); }
+
+  /* STATS */
+  .stats { padding-block: clamp(3rem, 6vw, 5rem); }
+  .stats__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+  .stats__item { display: grid; gap: 0.6rem; align-content: start; padding: 0 1.5rem 0 0; }
+  .stats__item + .stats__item { border-left: 1px solid var(--line); padding-left: 1.5rem; }
+  .stats__n { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: clamp(3rem, 1.5rem + 5vw, 6.5rem); line-height: 0.9; letter-spacing: -0.05em; color: var(--gold); }
+  .stats__l { font-size: var(--fs-sm); color: var(--text-2); max-width: 16rem; }
+  @media (max-width: 52rem) {
+    .stats__list { grid-template-columns: 1fr 1fr; row-gap: 2.5rem; }
+    .stats__item:nth-child(3) { border-left: 0; padding-left: 0; }
   }
 
-  /* WORK */
-  .work { padding-bottom: 0; padding-top: clamp(3.5rem, 7vw, 7rem); }
-  .work__intro { max-width: 30ch; }
-  .work__list { margin: 0; padding: 0; list-style: none; }
-  .wrow { border-top: 1px solid var(--rule); }
-  .wrow.night { border-top: 0; }
-  .wrow__inner {
-    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 2vw, 2rem); row-gap: 2rem;
-    padding-block: clamp(2.5rem, 5vw, 4.5rem); align-items: center;
+  /* WORK — bento */
+  .work { padding-top: clamp(3rem, 6vw, 6rem); }
+  .work__count { max-width: 18rem; }
+  .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(0.9rem, 1.6vw, 1.4rem); }
+  .card { min-width: 0; }
+  .b-feature { grid-column: 1 / span 7; }
+  .b-tall { grid-column: 8 / span 5; }
+  .b-wide { grid-column: 1 / span 5; }
+  .b-half { grid-column: span 7; }
+  .card.b-half:last-child { grid-column: 1 / -1; }
+  .card__link {
+    display: flex; flex-direction: column; gap: 1rem; height: 100%; text-decoration: none; color: inherit;
+    padding: clamp(1.25rem, 2.4vw, 2rem); border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line);
+    transition: border-color 0.35s var(--ease), transform 0.5s var(--ease), background 0.35s var(--ease);
+    position: relative; overflow: hidden;
   }
-  .wrow__text { grid-column: 1 / span 5; display: grid; gap: 1rem; align-content: start; }
-  .wrow__visual { grid-column: 6 / span 7; display: block; text-decoration: none; }
-  .wrow__title a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.4s var(--ease); }
-  .wrow__title a:hover { background-size: 100% 1px; }
-  .wrow__title a::after { content: ''; }
-  .wrow__preview { color: var(--ink-2); max-width: 34rem; }
-  .wrow__more { font-size: var(--fs-sm); font-weight: 550; text-decoration: none; color: var(--ink); margin-top: 0.25rem; }
-  .wrow__more .arrow { display: inline-block; transition: transform 0.25s var(--ease); }
-  .wrow:hover .wrow__more .arrow { transform: translateX(4px); }
-  .wrow__visual :global(.wv) { min-height: clamp(16rem, 32vw, 26rem); transition: transform 0.6s var(--ease); }
-  .wrow__visual:hover :global(.wv) { transform: translateY(-3px); }
-  .wrow.night .wrow__inner { padding-block: clamp(3.5rem, 7vw, 6rem); align-items: end; }
-  .wrow.night .wrow__text { grid-column: 1 / span 6; }
-  .wrow.night .wrow__visual { grid-column: 1 / -1; order: 2; }
-  .wrow.night .wrow__visual :global(.wv) { min-height: 0; }
-  @media (max-width: 56rem) { .wrow.night .wrow__text { grid-column: 1 / -1; } }
-  @media (max-width: 56rem) {
-    .wrow__text, .wrow__visual { grid-column: 1 / -1; }
+  .card__link::before {
+    content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; opacity: 0;
+    background: radial-gradient(60% 50% at 80% 0%, rgba(217, 178, 111, 0.16), transparent 70%); transition: opacity 0.5s var(--ease);
   }
+  .card__link:hover { border-color: rgba(217, 178, 111, 0.55); transform: translateY(-4px); }
+  .card__link:hover::before { opacity: 1; }
+  .card__head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .card__arrow {
+    width: 2.5rem; height: 2.5rem; flex: none; display: grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--line-2); font-size: 1rem; transition: background 0.3s var(--ease), color 0.3s var(--ease), transform 0.4s var(--ease), border-color 0.3s;
+  }
+  .card__link:hover .card__arrow { background: var(--gold); color: #111; border-color: var(--gold); transform: rotate(45deg); }
+  .card__title { font-family: var(--font-display); font-stretch: 110%; font-weight: 720; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.4rem); line-height: 1.02; letter-spacing: -0.03em; }
+  .b-feature .card__title { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.6rem); }
+  .card__preview { color: var(--text-2); font-size: var(--fs-sm); max-width: 34rem; }
+  .card__visual { flex: 1; min-height: 12rem; display: flex; align-items: flex-end; border-radius: 10px; overflow: hidden; }
+  .card__visual :global(.wv) { width: 100%; transition: transform 0.8s var(--ease); }
+  .card__link:hover .card__visual :global(.wv) { transform: scale(1.02); }
+  .card__visual :global(.mk), .card__visual :global(.crm), .card__visual :global(.ob), .card__visual :global(.wa) { background: var(--bg-3); }
+  .card__visual :global(.ob__list li) { grid-template-columns: 2rem 1fr; }
+  .card__visual :global(.ob__note) { grid-column: 2; text-align: left; }
+  .card.b-half:last-child .card__visual { min-height: 18rem; }
+  @media (max-width: 64rem) {
+    .b-feature { grid-column: 1 / -1; }
+    .b-tall, .b-wide, .b-half { grid-column: span 6; }
+  }
+  @media (max-width: 44rem) {
+    .b-tall, .b-wide, .b-half, .card.b-half:last-child { grid-column: 1 / -1; }
+  }
+
+  /* STUDIO */
+  .studio { padding-block: clamp(3rem, 6vw, 6rem) 0; border-top: 1px solid var(--line); }
+  .studio__ctrl { display: grid; gap: 0.75rem; justify-items: end; }
+  .studio__btns { display: flex; gap: 0.5rem; }
+  .studio__btn { width: 3rem; height: 3rem; border-radius: 50%; border: 1px solid var(--line-2); background: none; font-size: 1.1rem; transition: all 0.25s var(--ease); }
+  .studio__btn:hover { background: var(--gold); color: #111; border-color: var(--gold); }
+  .rail {
+    display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    padding-inline: var(--gutter); padding-bottom: 1.25rem; margin: 0; list-style: none; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent;
+    scroll-padding-inline: var(--gutter);
+  }
+  .rail:focus-visible { outline-offset: -2px; }
+  .rail__item { flex: none; height: clamp(22rem, 48vw, 38rem); aspect-ratio: var(--r); max-width: 82vw; scroll-snap-align: start; display: grid; grid-template-rows: 1fr auto; gap: 0.6rem; }
+  .rail__link { position: relative; display: block; overflow: hidden; border-radius: 8px; background: var(--bg-2); min-height: 0; }
+  .rail__link :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+  .rail__link:hover :global(img) { transform: scale(1.03); }
+  .rail__cap { display: flex; justify-content: space-between; gap: 0.75rem; }
+  .rail__cap span:first-child { color: var(--gold); }
+  .studio__more { padding-block: 1.5rem clamp(3rem, 6vw, 5rem); }
+  @media (max-width: 44rem) {
+    .studio__ctrl { justify-items: start; }
+    .rail__item { height: auto; width: 68vw; aspect-ratio: auto; }
+    .rail__link :global(img) { height: auto; aspect-ratio: var(--r); }
+  }
+
+  /* REEL */
+  .reel { border-top: 1px solid var(--line); }
+  .reel__more { margin-top: 2rem; }
 
   /* EXPERIENCE */
-  .exp { border-top: 1px solid var(--rule); }
-  .exp__role { row-gap: 2.5rem; }
-  .exp__who { grid-column: 1 / span 4; display: grid; gap: 0.5rem; align-content: start; }
-  .exp__facts { display: grid; gap: 0.9rem; margin-top: 1.25rem; }
-  .exp__facts div { display: grid; gap: 0.3rem; }
-  .exp__facts dd { margin: 0; }
-  .exp__what { grid-column: 5 / span 8; display: grid; gap: 2rem; }
-  .scope { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
-  .scope__item { display: grid; gap: 0.5rem; align-content: start; padding: 1.25rem 1.5rem 1.5rem 0; border-bottom: 1px solid var(--rule); }
-  .scope__item:nth-child(even) { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
-  .scope__body { font-size: var(--fs-sm); color: var(--ink-2); }
-  @media (max-width: 56rem) {
-    .exp__who, .exp__what { grid-column: 1 / -1; }
+  .tl { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--cream-ink); }
+  .tl__item { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 1.5rem 2rem; padding-block: 2rem; border-bottom: 1px solid var(--line); }
+  .tl__period { padding-top: 0.4rem; color: var(--text-2); }
+  .tl__title { font-family: var(--font-display); font-stretch: 112%; font-weight: 750; font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.9rem); line-height: 1; letter-spacing: -0.035em; }
+  .tl__org { margin-top: 0.6rem; color: var(--gold); font-weight: 550; }
+  .tl__points { margin: 1.25rem 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 2rem; }
+  .tl__points li { position: relative; padding-left: 1.1rem; color: var(--text-2); font-size: var(--fs-sm); line-height: 1.55; }
+  .tl__points li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+  @media (max-width: 52rem) {
+    .tl__item { grid-template-columns: 1fr; gap: 0.75rem; }
+    .tl__points { grid-template-columns: 1fr; }
   }
-  @media (max-width: 40rem) {
-    .scope { grid-template-columns: 1fr; }
-    .scope__item:nth-child(even) { padding-left: 0; border-left: 0; }
-  }
-  .kit { margin-top: clamp(4rem, 8vw, 7rem); }
-  .kit__head { margin-bottom: 2rem; }
-  .kit__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.5rem clamp(1.5rem, 3vw, 2.5rem); }
-  @media (max-width: 64rem) { .kit__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 40rem) { .kit__grid { grid-template-columns: 1fr; } }
-  .kit__group ul { margin: 0.9rem 0 0; padding: 0; list-style: none; }
-  .kit__group li { display: grid; gap: 0.1rem; padding-block: 0.6rem; border-top: 1px solid var(--rule); }
-  .kit__tool { font-weight: 550; font-size: var(--fs-sm); }
-  .kit__use { font-size: var(--fs-xs); color: var(--ink-3); font-family: var(--font-mono); letter-spacing: 0.01em; }
+  .kit { margin-top: clamp(3.5rem, 7vw, 6rem); display: grid; gap: 1.5rem; }
+  .kit__groups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; }
+  .kit__name { font-weight: 650; margin-bottom: 0.8rem; }
+  .kit__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+  .kit__chips li { font-size: var(--fs-xs); padding: 0.4rem 0.7rem; border-radius: 999px; background: #e3dbcb; border: 1px solid var(--line); }
+  @media (max-width: 64rem) { .kit__groups { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 40rem) { .kit__groups { grid-template-columns: 1fr; } }
 
   /* ABOUT */
-  .about { border-top: 1px solid var(--rule); }
-  .about__head { grid-column: 1 / span 4; }
-  .about__body { grid-column: 5 / span 7; display: grid; gap: 1.25rem; }
-  .about__p { color: var(--ink-2); max-width: var(--measure); }
-  @media (max-width: 56rem) {
-    .about__head, .about__body { grid-column: 1 / -1; }
-    .about__head { margin-bottom: 1.5rem; }
-  }
+  .about__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2rem clamp(2rem, 4vw, 4rem); align-items: start; }
+  .about__body { display: grid; gap: 1.25rem; }
+  .about__lead { font-size: var(--fs-xl); line-height: 1.12; color: var(--gold); }
+  .about__p { color: var(--text-2); max-width: var(--measure); }
+  @media (max-width: 52rem) { .about__grid { grid-template-columns: 1fr; } }
 
   /* CONTACT */
-  .contact { display: grid; }
-  .contact .wrap { display: grid; gap: 1.5rem; }
-  .contact__title { margin-top: 0.5rem; }
+  .contact { border-top: 1px solid var(--line); background: radial-gradient(80% 60% at 85% 10%, rgba(19, 32, 63, 0.9), transparent 70%), var(--bg); }
+  .contact .wrap { display: grid; gap: 1.75rem; }
+  .contact__title { font-size: clamp(3.5rem, 1rem + 13vw, 14rem); }
+  .contact__title .serif { font-size: 1.05em; }
   .contact__avail { max-width: 40rem; }
-  .contact__list { margin: 1.5rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); max-width: 52rem; }
-  .contact__list li { display: grid; grid-template-columns: 8rem 1fr; gap: 1rem; align-items: baseline; justify-items: start; padding-block: 1.1rem; border-bottom: 1px solid var(--rule); }
-  .contact__link { font-size: var(--fs-lg); font-weight: 550; letter-spacing: -0.01em; text-decoration: none; word-break: break-word; }
-  .contact__link:hover { color: var(--accent); }
-  .contact__cv { margin-top: 1rem; }
-  @media (max-width: 36rem) { .contact__list li { grid-template-columns: 1fr; gap: 0.4rem; } }
+  .contact__list { margin: 1rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line-2); }
+  .contact__list li { display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto; gap: 1rem; align-items: baseline; padding-block: 1.2rem; border-bottom: 1px solid var(--line); }
+  .contact__link { font-family: var(--font-display); font-stretch: 108%; font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2.5rem); font-weight: 650; letter-spacing: -0.02em; text-decoration: none; overflow-wrap: anywhere; transition: color 0.2s; }
+  .contact__link:hover { color: var(--gold); }
+  .contact__copy { background: none; border: 1px solid var(--line-2); border-radius: 999px; padding: 0.45rem 0.9rem; color: var(--text-2); min-height: 2.5rem; }
+  .contact__copy:hover { border-color: var(--gold); color: var(--gold); }
+  @media (max-width: 40rem) {
+    .contact__list li { grid-template-columns: 1fr; gap: 0.6rem; }
+    .contact__copy { justify-self: start; }
+    .contact__link { font-size: clamp(1.05rem, 0.7rem + 3.2vw, 1.5rem); }
+  }
 </style>

@@ -22,6 +22,7 @@ const n = String(d.order).padStart(2, '0');
 <Base title={`${d.title} — Abhinav Thakur`} description={d.seoDescription} type="article" tone={d.tone}>
   <article class="cs">
     <header class="cs-hero wrap">
+      <span class="cs-num" aria-hidden="true">{n}</span>
       <a class="cs-back label" href={url('/#work')}>← All work</a>
       <p class="label label--caps cs-kicker">Case study {n} · {d.kicker}</p>
       <h1 class="h1 cs-title balance">{d.title}</h1>
@@ -55,11 +56,18 @@ const n = String(d.order).padStart(2, '0');
 
 <style>
   .cs { padding-bottom: 2rem; }
-  .cs-hero { padding-top: clamp(2.5rem, 6vw, 5.5rem); padding-bottom: clamp(2rem, 4vw, 3.5rem); display: grid; gap: 1.25rem; }
+  .cs-hero { padding-top: clamp(2.5rem, 6vw, 5.5rem); padding-bottom: clamp(2rem, 4vw, 3.5rem); display: grid; gap: 1.25rem; position: relative; }
+  .cs-num {
+    position: absolute; right: var(--gutter); top: clamp(1rem, 4vw, 3rem); z-index: 0; pointer-events: none;
+    font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: clamp(6rem, 3rem + 16vw, 20rem); line-height: 0.8; letter-spacing: -0.06em;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(217, 178, 111, 0.45);
+  }
+  .cs-hero > :not(.cs-num) { position: relative; z-index: 1; }
+  .cs-kicker { color: var(--gold); }
   .cs-back { text-decoration: none; justify-self: start; padding-block: 0.4rem; }
   .cs-back:hover { color: var(--ink); }
   .cs-kicker { margin-top: 1rem; }
-  .cs-title { max-width: 20ch; }
+  .cs-title { max-width: 18ch; }
   .cs-summary { max-width: 44rem; }
   .cs-meta { margin-top: 1.25rem; }
   .cs-tools { display: grid; gap: 0.6rem; }

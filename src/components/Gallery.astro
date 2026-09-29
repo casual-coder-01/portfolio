@@ -54,7 +54,7 @@ const prepared = await Promise.all(
     flex: calc(var(--r) * 100) 1 calc(var(--r) * var(--row-h));
     min-width: 0; display: grid; gap: 0.55rem; align-content: start;
   }
-  .jg__link { display: block; overflow: hidden; background: var(--night-2); border-radius: var(--radius); }
+  .jg__link { position: relative; display: block; overflow: hidden; background: var(--night-2); border-radius: var(--radius); }
   .jg__link :global(img) {
     width: 100%; height: auto; aspect-ratio: var(--r); object-fit: cover;
     transition: transform 0.9s var(--ease), opacity 0.4s var(--ease);

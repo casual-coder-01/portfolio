@@ -15,6 +15,8 @@ import goldenRopes from '../assets/creative/rbp/golden-ropes.jpg';
 import glovedCard from '../assets/creative/rbp/gloved-card.jpg';
 import brandFirst from '../assets/creative/rbp/brand-first.jpg';
 
+import sendMoney from '../assets/creative/mego/send-money.jpg';
+import exploreFurther from '../assets/creative/mego/explore-further.jpg';
 import oneCard from '../assets/creative/mego/one-card.jpg';
 import dreamGlobal from '../assets/creative/mego/dream-global.jpg';
 import passportStamps from '../assets/creative/mego/passport-stamps.jpg';
@@ -77,6 +79,12 @@ export const rbpCampaign: CreativeItem[] = [
 
 export const megoCampaign: CreativeItem[] = [
   {
+    src: sendMoney,
+    title: 'Outward remittance',
+    format: 'Social · 2:3',
+    alt: 'MEGO Forex ad: an Indian passport and boarding pass on a plane tray table beside a glowing globe linked to cards for the UK, USA, Europe, Australia, UAE and Singapore. Headline: Send money across borders with ease.',
+  },
+  {
     src: oneCard,
     title: 'Multi-currency forex card',
     format: 'Social · 2:3',
@@ -87,6 +95,12 @@ export const megoCampaign: CreativeItem[] = [
     title: 'Education loan facilitation',
     format: 'Social · 2:3',
     alt: 'MEGO Forex ad: a student with a backpack walks a glowing path past glass panels showing Australia, the USA, the UK and Canada. Headline: Dream global. Study without borders.',
+  },
+  {
+    src: exploreFurther,
+    title: 'Travel & health insurance',
+    format: 'Social · 2:3',
+    alt: 'MEGO Forex ad: a traveller with a backpack sits on a rocky outlook facing a glass dome of world landmarks, a passport in the foreground. Headline: Explore further. Travel safer.',
   },
   {
     src: passportStamps,
@@ -108,46 +122,25 @@ export const megoCampaign: CreativeItem[] = [
   },
 ];
 
-export interface VideoItem {
-  slug: string;          // file name in public/media/video/<slug>.mp4 (+ -poster.webp/.jpg)
+/**
+ * VIDEOS — two kinds:
+ *   drive: a public Google Drive file ("Anyone with the link"). Paste the file ID
+ *          from its share link: drive.google.com/file/d/<THIS PART>/view
+ *   local: a file in public/media/video/<slug>.mp4 (+ .webm, -poster.jpg/.webp)
+ *          made with `npm run video -- <input> <slug>`
+ * Rename titles freely.
+ */
+export type VideoItem = {
   title: string;
-  description: string;
-  width: number;
-  height: number;
-  duration: string;
-  kind: 'client' | 'spec';
-  tools: string;
-}
+  description?: string;
+  ratio: number; // width / height — 16/9 landscape, 9/16 reel
+} & ({ kind: 'drive'; driveId: string } | { kind: 'local'; slug: string });
 
 export const videos: VideoItem[] = [
-  {
-    slug: 'money-moves',
-    title: 'Money moves with you',
-    description: 'Outward-remittance reel for MEGO Forex. Suitcase, flight, globe and coin as one continuous idea, ending on the card and the call to action.',
-    width: 720,
-    height: 1280,
-    duration: '0:10',
-    kind: 'client',
-    tools: 'AI video · edit',
-  },
-  {
-    slug: 'spec-music',
-    title: 'Listening, visualised',
-    description: 'Spec concept for a music-streaming brand: sound rendered as light moving through a room.',
-    width: 1280,
-    height: 720,
-    duration: '0:08',
-    kind: 'spec',
-    tools: 'Google Flow',
-  },
-  {
-    slug: 'spec-product',
-    title: 'Product insert shot',
-    description: 'Spec macro insert for an oral-care brand — texture, timing and light for a hero product moment.',
-    width: 1280,
-    height: 720,
-    duration: '0:08',
-    kind: 'spec',
-    tools: 'Google Flow',
-  },
+  { kind: 'drive', driveId: '11La60rHnMWZW1qSCDX-y3lFkaq6Jjycl', title: 'Brand film — cut 2', ratio: 16 / 9 },
+  { kind: 'drive', driveId: '1d7mvYTkw4tXTFckgF9-co-NkoJZ5pOnS', title: 'Brand film — cut 3', ratio: 16 / 9 },
+  { kind: 'local', slug: 'mego-app-promo', title: 'MEGO Forex app promo', ratio: 16 / 9 },
+  { kind: 'drive', driveId: '1wVmTyQFz8fWsAbtJybkqYkKHK70mMhMw', title: 'Money follow', ratio: 16 / 9 },
+  { kind: 'drive', driveId: '1dcvCt3SAGtzrTTKiFMkgC8R6GDo78si2', title: 'Higgsfield sequence', ratio: 16 / 9 },
+  { kind: 'drive', driveId: '182kaFF8zws2l0GiAIGzNIZb3nPDZvOMl', title: 'The coffee run', ratio: 16 / 9 },
 ];

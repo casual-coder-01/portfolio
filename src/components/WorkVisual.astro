@@ -7,10 +7,10 @@ import { Picture } from 'astro:assets';
 import TemplateCard from './TemplateCard.astro';
 import { rbpCampaign, megoCampaign } from '../data/creative';
 
-interface Props { kind: 'markets' | 'crm' | 'outbound' | 'whatsapp' | 'creative'; size?: 'card' | 'hero' }
-const { kind, size = 'card' } = Astro.props;
+interface Props { kind: 'markets' | 'crm' | 'outbound' | 'whatsapp' | 'creative'; size?: 'card' | 'hero'; mosaic?: boolean }
+const { kind, size = 'card', mosaic = false } = Astro.props;
 
-const markets = ['France', 'Russia', 'Canada', 'Malaysia'];
+const markets = ['France', 'Canada', 'Malaysia', 'UAE'];
 const stages = [
   ['Enquiry received', 10], ['Meeting', 25], ['Quote given', 40], ['Documents & KYC submitted', 55],
   ['Documents verified', 70], ['Payment received', 85], ['Activated', 100],
@@ -23,7 +23,9 @@ const chain = [
   ['Replies → score', 'hot · warm · qualified · low'],
   ['Zoho CRM', 'partnership stage · next action'],
 ];
-const collage = [rbpCampaign[0], megoCampaign[0], rbpCampaign[2], megoCampaign[1], rbpCampaign[6]];
+const collage = mosaic
+  ? [rbpCampaign[0], megoCampaign[0], rbpCampaign[3], megoCampaign[1], rbpCampaign[2], megoCampaign[3]]
+  : [rbpCampaign[0], megoCampaign[0], rbpCampaign[2], megoCampaign[1], rbpCampaign[6]];
 ---
 <div class:list={['wv', `wv--${kind}`, `wv--${size}`]} aria-hidden={size === 'card' ? 'true' : undefined}>
   {kind === 'markets' && (
@@ -79,7 +81,7 @@ const collage = [rbpCampaign[0], megoCampaign[0], rbpCampaign[2], megoCampaign[1
   )}
 
   {kind === 'creative' && (
-    <div class="cr">
+    <div class:list={['cr', { 'cr--mosaic': mosaic }]}>
       {collage.map((c, i) => (
         <div class={`cr__item cr__item--${i}`} style={`--r:${(c.src.width / c.src.height).toFixed(4)}`}>
           <Picture src={c.src} alt={size === 'card' ? '' : c.alt} formats={['avif', 'webp']} fallbackFormat="webp" widths={[320, 520, 760]} sizes="(max-width: 40rem) 33vw, 20vw" loading="lazy" decoding="async" quality={78} />
@@ -130,5 +132,9 @@ const collage = [rbpCampaign[0], megoCampaign[0], rbpCampaign[2], megoCampaign[1
   .cr { display: flex; gap: clamp(0.5rem, 1vw, 0.9rem); align-items: flex-start; }
   .cr__item { flex: var(--r) 1 0; min-width: 0; overflow: hidden; border-radius: var(--radius); background: var(--night-2); }
   .cr__item :global(img) { width: 100%; height: auto; aspect-ratio: var(--r); }
-  @media (max-width: 40rem) { .cr__item--3, .cr__item--4 { display: none; } }
+  @media (max-width: 40rem) { .cr:not(.cr--mosaic) .cr__item--3, .cr:not(.cr--mosaic) .cr__item--4 { display: none; } }
+  .cr--mosaic { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.5rem, 1vw, 0.8rem); }
+  .cr--mosaic .cr__item :global(img) { aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 30%; height: 100%; }
+  .cr--mosaic .cr__item:nth-child(2) { transform: translateY(8%); }
+  .cr--mosaic .cr__item:nth-child(5) { transform: translateY(8%); }
 </style>

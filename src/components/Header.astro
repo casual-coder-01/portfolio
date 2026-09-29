@@ -4,6 +4,7 @@ import { url } from '../lib/url';
 
 const links = [
   { href: url('/#work'), label: 'Work' },
+  { href: url('/#studio'), label: 'Studio' },
   { href: url('/#experience'), label: 'Experience' },
   { href: url('/#about'), label: 'About' },
   ...(site.resumeAvailable ? [{ href: url(site.resumePath), label: 'Résumé' }] : []),
@@ -14,7 +15,7 @@ const links = [
   <div class="wrap hdr__inner">
     <a class="hdr__brand" href={url('/')} aria-label={`${site.name} — home`}>
       <span class="hdr__name">Abhinav Thakur</span>
-      <span class="hdr__role label">BD · Growth systems · AI marketing</span>
+      <span class="hdr__role label">Business systems · BD · AI marketing</span>
     </a>
 
     <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
@@ -35,7 +36,7 @@ const links = [
 <style>
   .hdr {
     position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
     border-bottom: 1px solid transparent;
     transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
   }

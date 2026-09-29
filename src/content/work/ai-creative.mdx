@@ -47,20 +47,16 @@ The imagery carries the emotion — travel, study, family — while the layout d
 </Part>
 
 <Wide>
-<Gallery items={megoCampaign} label="MEGO Forex services campaign" layout="grid" cols={5} />
+<Gallery items={megoCampaign} label="MEGO Forex services campaign" layout="grid" cols={4} />
 </Wide>
 
 <Part n="04" title="Motion">
-Short-form video for reels and stories, plus spec concepts that test pacing, texture and product moments. Videos load only when you play them.
+Brand films, ads and product promos made with Higgsfield, Google Flow and ElevenLabs, then cut and finished by hand. Videos load only when you press play.
 </Part>
 
 <Wide>
 <div class="video-grid">
-  <VideoCard video={videos[0]} featured />
-  <div class="video-grid__side">
-    <VideoCard video={videos[1]} />
-    <VideoCard video={videos[2]} />
-  </div>
+  {videos.map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
 </div>
 </Wide>
 

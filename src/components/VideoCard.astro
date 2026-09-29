@@ -1,106 +1,89 @@
 ---
 /**
- * Lightweight video: nothing downloads until the viewer asks.
- * Desktop hover plays a muted preview; click plays with sound and native controls.
+ * Video tile. Nothing heavy loads until the viewer presses play.
+ *  - drive: shows the Drive thumbnail, then swaps in Google Drive's player
+ *  - local: native <video> with MP4 + WebM
  */
 import type { VideoItem } from '../data/creative';
 import { url } from '../lib/url';
-interface Props { video: VideoItem; featured?: boolean }
-const { video, featured = false } = Astro.props;
-const src = url(`/media/video/${video.slug}.mp4`);
-const webm = url(`/media/video/${video.slug}.webm`);
-const posterWebp = url(`/media/video/${video.slug}-poster.webp`);
-const posterJpg = url(`/media/video/${video.slug}-poster.jpg`);
-const ratio = video.width / video.height;
-const portrait = ratio < 1;
+interface Props { video: VideoItem; index?: number; featured?: boolean }
+const { video, index = 0, featured = false } = Astro.props;
+const n = String(index + 1).padStart(2, '0');
+const poster =
+  video.kind === 'drive'
+    ? `https://drive.google.com/thumbnail?id=${video.driveId}&sz=w1280`
+    : url(`/media/video/${video.slug}-poster.jpg`);
+const embed = video.kind === 'drive' ? `https://drive.google.com/file/d/${video.driveId}/preview` : '';
+const link = video.kind === 'drive' ? `https://drive.google.com/file/d/${video.driveId}/view` : url(`/media/video/${video.slug}.mp4`);
 ---
-<figure class:list={['vc', { 'vc--portrait': portrait, 'vc--featured': featured }]} style={`--r:${ratio.toFixed(4)}`} data-reveal>
-  <div class="vc__frame" data-video>
-    <video
-      class="vc__video"
-      preload="none"
-      playsinline
-      poster={posterJpg}
-      width={video.width}
-      height={video.height}
-      aria-label={`${video.title} — video, ${video.duration}`}
-    >
-      <source src={src} type="video/mp4" />
-      <source src={webm} type="video/webm" />
-    </video>
-    <picture class="vc__poster" aria-hidden="true">
-      <source srcset={posterWebp} type="image/webp" />
-      <img src={posterJpg} alt="" width={video.width} height={video.height} loading="lazy" decoding="async" />
-    </picture>
-    <button class="vc__play" type="button" data-play aria-label={`Play video: ${video.title}`}>
-      <span class="vc__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
-      </span>
-      <span class="vc__len label">{video.duration}</span>
+<figure class:list={['vt', { 'vt--featured': featured }]} style={`--r:${video.ratio.toFixed(4)}`} data-reveal>
+  <div class="vt__frame" data-vt data-kind={video.kind} data-embed={embed}>
+    {video.kind === 'local' ? (
+      <video class="vt__media" preload="none" playsinline poster={poster} aria-label={video.title}>
+        <source src={url(`/media/video/${video.slug}.mp4`)} type="video/mp4" />
+        <source src={url(`/media/video/${video.slug}.webm`)} type="video/webm" />
+      </video>
+    ) : (
+      <img class="vt__media vt__poster" src={poster} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.opacity=0" />
+    )}
+    <div class="vt__shade" aria-hidden="true"></div>
+    <button class="vt__play" type="button" data-play aria-label={`Play video: ${video.title}`}>
+      <span class="vt__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg></span>
     </button>
+    <span class="vt__n label" aria-hidden="true">{n}</span>
   </div>
-  <figcaption class="vc__cap">
-    <span class="vc__title">{video.title}</span>
-    <span class="label vc__meta">{video.kind === 'spec' ? 'Spec concept' : 'Brand work'} · {video.tools}</span>
-    <span class="vc__desc">{video.description}</span>
+  <figcaption class="vt__cap">
+    <span class="vt__title">{video.title}</span>
+    <a class="vt__open label" href={link} target="_blank" rel="noopener">Open ↗</a>
   </figcaption>
 </figure>
 
 <style>
-  .vc { margin: 0; display: grid; gap: 0.9rem; align-content: start; }
-  .vc__frame { position: relative; aspect-ratio: var(--r); background: #000; overflow: hidden; border-radius: var(--radius); }
-  .vc__video, .vc__poster, .vc__poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .vc__poster { transition: opacity 0.35s var(--ease); }
-  .vc__frame.is-previewing .vc__poster, .vc__frame.is-playing .vc__poster { opacity: 0; pointer-events: none; }
-  .vc__play {
-    position: absolute; left: 1rem; bottom: 1rem; display: inline-flex; align-items: center; gap: 0.6rem;
-    background: rgba(12, 13, 15, 0.72); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px; padding: 0.45rem 0.9rem 0.45rem 0.5rem; min-height: 2.75rem;
-    transition: background 0.2s var(--ease);
+  .vt { margin: 0; display: grid; gap: 0.8rem; min-width: 0; }
+  .vt__frame {
+    position: relative; aspect-ratio: var(--r); max-width: 100%; overflow: hidden; border-radius: 6px;
+    background: radial-gradient(120% 90% at 20% 10%, #1d2740 0%, var(--bg-2) 60%);
+    border: 1px solid var(--line);
   }
-  @supports (backdrop-filter: blur(1px)) { .vc__play { backdrop-filter: blur(6px); } }
-  .vc__play:hover { background: rgba(12, 13, 15, 0.9); }
-  .vc__icon { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: #fff; color: #111; }
-  .vc__len { color: #e9e7e2; }
-  .vc__frame.is-playing .vc__play { display: none; }
-  .vc__cap { display: grid; gap: 0.3rem; }
-  .vc__title { font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.01em; }
-  .vc__desc { font-size: var(--fs-sm); color: var(--ink-2); max-width: 34rem; }
-  .vc--portrait .vc__frame { max-height: 78vh; max-width: calc(78vh * var(--r)); }
+  .vt__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease), opacity 0.4s; }
+  .vt__frame:hover .vt__poster { transform: scale(1.04); }
+  .vt__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vt__shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(4, 5, 8, 0.65)); pointer-events: none; }
+  .vt__play {
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+    width: 4.25rem; height: 4.25rem; border-radius: 50%; display: grid; place-items: center;
+    background: var(--gold); color: #111; border: 0;
+    box-shadow: 0 0 0 0 rgba(217, 178, 111, 0.5); transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .vt__frame:hover .vt__play { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(217, 178, 111, 0.14); }
+  .vt--featured .vt__play { width: 5.5rem; height: 5.5rem; }
+  .vt__n { position: absolute; left: 1rem; top: 0.9rem; color: var(--text); opacity: 0.8; }
+  .vt__frame.is-playing .vt__play, .vt__frame.is-playing .vt__shade, .vt__frame.is-playing .vt__n { display: none; }
+  .vt__cap { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .vt__title { font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.01em; }
+  .vt__open { text-decoration: none; color: var(--text-3); white-space: nowrap; }
+  .vt__open:hover { color: var(--gold); }
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-video]').forEach((frame) => {
-    const video = frame.querySelector('video')!;
-    const btn = frame.querySelector<HTMLButtonElement>('[data-play]')!;
-    const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let playing = false;
-
-    btn.addEventListener('click', () => {
-      playing = true;
-      frame.classList.remove('is-previewing');
+  document.querySelectorAll<HTMLElement>('[data-vt]').forEach((frame) => {
+    const btn = frame.querySelector<HTMLButtonElement>('[data-play]');
+    btn?.addEventListener('click', () => {
       frame.classList.add('is-playing');
-      video.muted = false;
-      video.controls = true;
-      video.currentTime = 0;
-      video.play().catch(() => {});
-      video.focus();
+      if (frame.dataset.kind === 'drive') {
+        const iframe = document.createElement('iframe');
+        iframe.src = frame.dataset.embed!;
+        iframe.allow = 'autoplay; fullscreen';
+        iframe.allowFullscreen = true;
+        iframe.title = btn.getAttribute('aria-label')?.replace('Play video: ', '') ?? 'Video';
+        frame.appendChild(iframe);
+        iframe.focus();
+      } else {
+        const v = frame.querySelector('video')!;
+        v.controls = true;
+        v.play().catch(() => {});
+        v.focus();
+      }
     });
-
-    if (canHover && !reduce) {
-      frame.addEventListener('mouseenter', () => {
-        if (playing) return;
-        video.muted = true;
-        video.loop = true;
-        video.play().then(() => frame.classList.add('is-previewing')).catch(() => {});
-      });
-      frame.addEventListener('mouseleave', () => {
-        if (playing) return;
-        video.pause();
-        frame.classList.remove('is-previewing');
-      });
-    }
-    video.addEventListener('ended', () => { if (playing) video.controls = true; });
   });
 </script>
