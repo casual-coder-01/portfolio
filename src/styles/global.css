@@ -200,21 +200,3 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em
 .marquee__item:nth-child(odd) { color: transparent; -webkit-text-stroke: 1px var(--text-2); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
-
-/* ---------- Holographic cards ----------
-   Add class="holo" to a card link. On fine pointers it tilts toward the cursor and a
-   foil sheen (gold → cyan → violet) follows it, like a holographic trading card.
-   Touch screens and reduced-motion viewers get the plain card. */
-.holo { position: relative; overflow: hidden; --mx: 50%; --my: 50%; --px: 50%; --py: 50%; }
-.holo::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
-  opacity: 0; transition: opacity 0.45s var(--ease); mix-blend-mode: color-dodge;
-  background:
-    radial-gradient(38% 46% at var(--mx) var(--my), rgba(255, 246, 228, 0.2), transparent 62%),
-    linear-gradient(115deg, transparent 18%, rgba(217, 178, 111, 0.26) 32%, rgba(111, 214, 255, 0.18) 44%, rgba(196, 140, 255, 0.18) 56%, rgba(242, 213, 155, 0.24) 68%, transparent 82%);
-  background-size: 100% 100%, 260% 260%;
-  background-position: center, var(--px) var(--py);
-}
-.holo.is-holo::after { opacity: 1; }
-.holo.is-holo { will-change: transform; }
-@media (prefers-reduced-motion: reduce) { .holo::after { display: none; } }

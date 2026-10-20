@@ -11,7 +11,6 @@ import WorkVisual from '../../components/WorkVisual.astro';
 import VideoCard from '../../components/VideoCard.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import Engine from '../../components/Engine.astro';
-import Signal from '../../components/Signal.astro';
 import portrait from '../../assets/me/abhinav-portrait.jpg';
 import { site } from '../../data/site';
 import { rolePages, path as careerPath, social, products, countries, services, steps, caseStudy, type RolePage } from '../../data/roles';
@@ -46,7 +45,6 @@ const socialMax = Math.max(...social.map((s) => s.to));
 <Base title={`Abhinav Thakur — ${role.title}`} description={role.seo} noindex tagline={role.title}>
   <!-- ─────────────── HERO ─────────────── -->
   <section class="rh" aria-labelledby="rh-title">
-    <Signal core={[0.82, 0.33]} coreMobile={[0.86, 0.035]} />
     <div class="wrap rh__top label" data-reveal>
       <span>{isJob ? 'Head of Operations · Royal Bank Pacific' : 'ABN registered · Melbourne'}</span>
       <span class="rh__status"><span class="dot" aria-hidden="true"></span>{isJob ? 'Open to part-time roles · Melbourne' : 'Taking on new projects'}</span>
@@ -205,7 +203,7 @@ const socialMax = Math.max(...social.map((s) => s.to));
       <ul class="cards" role="list">
         {work.map((w, i) => (
           <li class:list={['card', { 'card--lead': i === 0 }]} data-reveal style={`--d:${(i % 2) * 90}ms`}>
-            <a class="card__link holo" href={url(`/work/${w.id}/`)}>
+            <a class="card__link" href={url(`/work/${w.id}/`)}>
               <div class="card__head">
                 <span class="label">{w.data.kicker}</span>
                 <span class="card__arrow" aria-hidden="true">↗</span>
@@ -351,8 +349,7 @@ const socialMax = Math.max(...social.map((s) => s.to));
 
 <style>
   /* HERO */
-  .rh { padding-top: clamp(1.5rem, 4vw, 3rem); overflow: hidden; position: relative; }
-  .rh > .wrap { position: relative; z-index: 1; }
+  .rh { padding-top: clamp(1.5rem, 4vw, 3rem); overflow: hidden; }
   .rh__top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: clamp(1.5rem, 4vw, 2.5rem); }
   .rh__status { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--text-2); }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #5fd38d; animation: pulse 2.4s infinite; }
