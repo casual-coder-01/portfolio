@@ -16,7 +16,8 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'ignore',
-  integrations: [mdx(), sitemap()],
+  // Role landing pages under /for/ are unlisted: shared via résumé links only.
+  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/for/') })],
   build: { inlineStylesheets: 'auto', format: 'directory' },
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
 });

@@ -14,6 +14,9 @@ import statueRbp from '../assets/creative/rbp/statue-rbp.jpg';
 import goldenRopes from '../assets/creative/rbp/golden-ropes.jpg';
 import glovedCard from '../assets/creative/rbp/gloved-card.jpg';
 import brandFirst from '../assets/creative/rbp/brand-first.jpg';
+import whitelabelPlatform from '../assets/creative/rbp/whitelabel-platform.jpg';
+import eightServices from '../assets/creative/rbp/eight-services.jpg';
+import gandhiJayanti from '../assets/creative/rbp/gandhi-jayanti.jpg';
 
 import sendMoney from '../assets/creative/mego/send-money.jpg';
 import exploreFurther from '../assets/creative/mego/explore-further.jpg';
@@ -22,6 +25,11 @@ import dreamGlobal from '../assets/creative/mego/dream-global.jpg';
 import passportStamps from '../assets/creative/mego/passport-stamps.jpg';
 import glassJar from '../assets/creative/mego/glass-jar.jpg';
 import bordersBeginnings from '../assets/creative/mego/borders-beginnings.jpg';
+import currencyExchange from '../assets/creative/mego/currency-exchange.jpg';
+import internationalSim from '../assets/creative/mego/international-sim.jpg';
+import travelInsurance from '../assets/creative/mego/travel-insurance.jpg';
+import worldIsYours from '../assets/creative/mego/world-is-yours.jpg';
+import dussehra from '../assets/creative/mego/dussehra.jpg';
 
 import type { ImageMetadata } from 'astro';
 
@@ -75,6 +83,24 @@ export const rbpCampaign: CreativeItem[] = [
     format: 'Social · 4:5',
     alt: 'A candlelit palace hall with an ornate wooden desk draped in navy velvet embroidered with a gold eagle. Headline: Your Brand First — our infrastructure behind it.',
   },
+  {
+    src: whitelabelPlatform,
+    title: 'Your brand, our infrastructure',
+    format: 'B2B · 1:1',
+    alt: 'RBP Finivis white-label ad: a navy pop-up box opens into a paper city of world landmarks above tiles for remittance, currency exchange, forex card, travel insurance, international SIM and visa assistance. Headline: Build global possibilities under your brand.',
+  },
+  {
+    src: eightServices,
+    title: 'One platform, eight services',
+    format: 'B2B · 1:1',
+    alt: 'RBP Finivis explainer on cream: eight illustrated tiles for remittance, currency exchange, travel insurance, live forex rates, forex card, education loan, visa assistance and trade remittance. Headline: One platform. Eight services. All under your brand.',
+  },
+  {
+    src: gandhiJayanti,
+    title: 'Gandhi Jayanti',
+    format: 'Festive · 4:5',
+    alt: 'RBP Finivis festive post: a paper-cut figure of Gandhi in a flowing shawl walks a winding path toward a setting sun. Headline: Gandhi Jayanti — the power of a simple idea.',
+  },
 ];
 
 export const megoCampaign: CreativeItem[] = [
@@ -120,6 +146,36 @@ export const megoCampaign: CreativeItem[] = [
     format: 'Social · 2:3',
     alt: 'MEGO Forex ad in warm cream tones: an arched window opens onto a Mediterranean coast above a desk with books and a passport. Headline: Borders are just beginnings.',
   },
+  {
+    src: currencyExchange,
+    title: 'Currency exchange',
+    format: 'Social · 1:1',
+    alt: 'MEGO Forex ad on black: a rupee note feeds through a glowing exchange machine and comes out as dollars, euros and pounds. Headline: Currency exchange at competitive rates.',
+  },
+  {
+    src: internationalSim,
+    title: 'International SIM',
+    format: 'Social · 2:3',
+    alt: 'MEGO Forex ad: a phone with an international SIM screen rests on a passport by a plane window, with glass panels of world cities outside. Headline: Stay connected wherever you go.',
+  },
+  {
+    src: travelInsurance,
+    title: 'Travel insurance',
+    format: 'Social · 1:1',
+    alt: 'MEGO Forex ad: a tortoise wearing a backpack rides a skateboard under a protective glass dome past the Eiffel Tower and the Colosseum. Headline: Travel insurance — travel worry-free.',
+  },
+  {
+    src: worldIsYours,
+    title: 'The world is yours',
+    format: 'Social · 2:3',
+    alt: 'MEGO Forex ad: an open navy gift box holds a globe of world landmarks, with icons for every MEGO service down the left. Headline: The world is yours. We handle the rest.',
+  },
+  {
+    src: dussehra,
+    title: 'Dussehra',
+    format: 'Festive · 4:5',
+    alt: 'MEGO Forex festive post: an archer silhouetted in golden light between tall pillars, reflected in a dark floor. Headline: Choose the light you reflect.',
+  },
 ];
 
 /**
@@ -137,10 +193,16 @@ export type VideoItem = {
 } & ({ kind: 'drive'; driveId: string } | { kind: 'local'; slug: string });
 
 export const videos: VideoItem[] = [
-  { kind: 'drive', driveId: '11La60rHnMWZW1qSCDX-y3lFkaq6Jjycl', title: 'Brand film — cut 2', ratio: 16 / 9 },
-  { kind: 'drive', driveId: '1d7mvYTkw4tXTFckgF9-co-NkoJZ5pOnS', title: 'Brand film — cut 3', ratio: 16 / 9 },
+  { kind: 'local', slug: 'mego-coffee-run', title: 'The coffee run', description: 'MEGO Forex card', ratio: 16 / 9 },
   { kind: 'local', slug: 'mego-app-promo', title: 'MEGO Forex app promo', ratio: 16 / 9 },
-  { kind: 'drive', driveId: '1wVmTyQFz8fWsAbtJybkqYkKHK70mMhMw', title: 'Money follow', ratio: 16 / 9 },
-  { kind: 'drive', driveId: '1dcvCt3SAGtzrTTKiFMkgC8R6GDo78si2', title: 'Higgsfield sequence', ratio: 16 / 9 },
-  { kind: 'drive', driveId: '182kaFF8zws2l0GiAIGzNIZb3nPDZvOMl', title: 'The coffee run', ratio: 16 / 9 },
+  { kind: 'drive', driveId: '1d7mvYTkw4tXTFckgF9-co-NkoJZ5pOnS', title: 'Brand film — cut 3', ratio: 16 / 9 },
+  { kind: 'local', slug: 'mego-forex-presenter', title: 'Forex offer', description: 'MEGO Forex, AI presenter', ratio: 9 / 16 },
+  { kind: 'local', slug: 'mego-international-sim', title: 'International SIM', description: 'MEGO Forex reel', ratio: 9 / 16 },
+  { kind: 'local', slug: 'rbp-travel-agency-pitch', title: 'Travel-agency pitch', description: 'RBP Finivis, AI presenter', ratio: 9 / 16 },
+  { kind: 'local', slug: 'mego-money-moves', title: 'Money moves', description: 'MEGO Forex reel', ratio: 9 / 16 },
+  { kind: 'local', slug: 'mego-money-follow', title: 'Money follow', description: 'MEGO Forex reel', ratio: 9 / 16 },
 ];
+
+/** Landscape films and vertical reels are laid out differently. */
+export const films = videos.filter((v) => v.ratio >= 1);
+export const reels = videos.filter((v) => v.ratio < 1);

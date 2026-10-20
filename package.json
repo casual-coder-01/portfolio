@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check:placeholders": "node scripts/check-placeholders.mjs",
-    "video": "bash scripts/encode-video.sh"
+    "video": "bash scripts/encode-video.sh",
+    "resume": "node scripts/build-resumes.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "4.3.14",
@@ -23,5 +24,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1",
+    "qrcode": "^1.5.4"
   }
 }

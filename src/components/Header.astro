@@ -2,6 +2,9 @@
 import { site } from '../data/site';
 import { url } from '../lib/url';
 
+interface Props { tagline?: string }
+const { tagline = 'Operations · CRM & RevOps · Growth' } = Astro.props;
+
 const links = [
   { href: url('/#work'), label: 'Work' },
   { href: url('/#studio'), label: 'Studio' },
@@ -15,7 +18,7 @@ const links = [
   <div class="wrap hdr__inner">
     <a class="hdr__brand" href={url('/')} aria-label={`${site.name} — home`}>
       <span class="hdr__name">Abhinav Thakur</span>
-      <span class="hdr__role label">Business systems · BD · AI marketing</span>
+      <span class="hdr__role label">{tagline}</span>
     </a>
 
     <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>

@@ -3,8 +3,8 @@ order: 5
 title: "AI creative production for a regulated brand"
 cardTitle: "AI creative production"
 kicker: "Creative direction & production"
-summary: "Two complete campaigns and short-form video for RBP Finivis and MEGO Forex — produced with generative AI, art-directed by hand, and checked against the brand's compliance rules before anything ships."
-preview: "Two complete campaigns and short-form video, produced with generative AI inside a regulated category's rules."
+summary: "100+ campaign creatives, reels and brand films for RBP Finivis and MEGO Forex — produced with generative AI, art-directed by hand, and checked against the brand's compliance rules before anything ships."
+preview: "100+ campaign creatives, reels and brand films, produced with generative AI inside a regulated category's rules."
 meta:
   - { label: Role, value: Creative direction & production }
   - { label: Brands, value: RBP Finivis (B2B) · MEGO Forex (B2C) }
@@ -22,7 +22,7 @@ import Wide from '../../components/Wide.astro';
 import Gallery from '../../components/Gallery.astro';
 import VideoCard from '../../components/VideoCard.astro';
 import Rules from '../../components/Rules.astro';
-import { rbpCampaign, megoCampaign, videos } from '../../data/creative';
+import { rbpCampaign, megoCampaign, films, reels } from '../../data/creative';
 
 <Part n="01" title="Overview">
 I produce campaign creative and short-form video for both brands with generative AI — concept, prompting, compositing, typography and final edit. Models do the rendering; the decisions about idea, composition, copy and what's allowed to ship are mine.
@@ -55,8 +55,11 @@ Brand films, ads and product promos made with Higgsfield, Google Flow and Eleven
 </Part>
 
 <Wide>
+<div class="reel-grid reel-grid--lead">
+  {reels.map((v, i) => <VideoCard video={v} index={i} />)}
+</div>
 <div class="video-grid">
-  {videos.map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+  {films.map((v, i) => <VideoCard video={v} index={i + reels.length} featured={i === 0} />)}
 </div>
 </Wide>
 

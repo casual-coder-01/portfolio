@@ -1,2 +1,2 @@
-Put your résumé here as:  Abhinav-Thakur-Resume.pdf
-Then set  resumeAvailable: true  in src/data/site.ts
+These PDFs are generated. Don't edit them by hand.
+Edit resume/content.mjs (words) or resume/resume.css (look), then run:  npm run resume

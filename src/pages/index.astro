@@ -8,7 +8,7 @@ import Lightbox from '../components/Lightbox.astro';
 import portrait from '../assets/me/abhinav-portrait.jpg';
 import { site, role } from '../data/site';
 import { stats, marquee, timeline, toolkit, about } from '../data/profile';
-import { rbpCampaign, megoCampaign, videos } from '../data/creative';
+import { rbpCampaign, megoCampaign, films, reels } from '../data/creative';
 import { url } from '../lib/url';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -58,9 +58,9 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
 
       <div class="hero__copy" data-reveal style="--d:280ms">
         <p class="label label--caps hero__role">{role.title} · {role.company}</p>
-        <p class="hero__statement balance">Business development, <span class="serif gold">with the systems</span> built in.</p>
+        <p class="hero__statement balance">Growth, sales and operations, <span class="serif gold">with the systems</span> built in.</p>
         <p class="lede pretty">
-          I talk to prospective B2B clients about SaaS, BaaS and payment infrastructure — then build the CRM, outbound, messaging and AI-made marketing that keeps the pipeline moving.
+          Head of Operations at a fintech group that brought in US$8M+ in 18 months. I lead three teams, closed nine international deals myself, and built the CRM, outbound and AI-made marketing that keep the pipeline moving.
         </p>
         <div class="hero__cta">
           <a class="btn btn--down" href="#work">See the work <span class="arrow" aria-hidden="true">↓</span></a>
@@ -68,7 +68,7 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
         </div>
         <dl class="hero__facts">
           <div><dt class="label label--caps">In role</dt><dd>{tenure}</dd></div>
-          <div><dt class="label label--caps">Markets</dt><dd>France · Canada · Malaysia · UAE</dd></div>
+          <div><dt class="label label--caps">Clients in</dt><dd>8 countries</dd></div>
           <div><dt class="label label--caps">Based</dt><dd>Melbourne, AU</dd></div>
         </dl>
       </div>
@@ -166,8 +166,11 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
           <p class="label">Films and ads · press play to load</p>
         </div>
       </header>
+      <div class="reel-grid reel-grid--lead">
+        {reels.slice(0, 4).map((v, i) => <VideoCard video={v} index={i} />)}
+      </div>
       <div class="video-grid">
-        {videos.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+        {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i + 4} featured={i === 0} />)}
       </div>
       <p class="reel__more"><a class="link label" href={url('/work/ai-creative/#motion')}>All videos in the creative case study →</a></p>
     </div>
@@ -325,7 +328,7 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
   .stats__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
   .stats__item { display: grid; gap: 0.6rem; align-content: start; padding: 0 1.5rem 0 0; }
   .stats__item + .stats__item { border-left: 1px solid var(--line); padding-left: 1.5rem; }
-  .stats__n { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: clamp(3rem, 1.5rem + 5vw, 6.5rem); line-height: 0.9; letter-spacing: -0.05em; color: var(--gold); }
+  .stats__n { font-family: var(--font-display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.6rem, 1.3rem + 4.2vw, 5.4rem); line-height: 0.9; letter-spacing: -0.05em; color: var(--gold); }
   .stats__l { font-size: var(--fs-sm); color: var(--text-2); max-width: 16rem; }
   @media (max-width: 52rem) {
     .stats__list { grid-template-columns: 1fr 1fr; row-gap: 2.5rem; }

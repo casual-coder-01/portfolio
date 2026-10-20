@@ -1,0 +1,106 @@
+/* ==========================================================================
+   Résumé print styles — same palette and type as the site, set for A4.
+   One column top to bottom so job-portal (ATS) parsers read it in order.
+   Fonts are static instances (see resume/fonts) so PDFs embed real
+   TrueType text rather than Type 3 glyphs.
+   ========================================================================== */
+
+@font-face { font-family: 'ArchivoX'; src: url('fonts/Archivo-XBold-Exp.ttf'); }
+@font-face { font-family: 'ArchivoS'; src: url('fonts/Archivo-Bold-SemiExp.ttf'); }
+@font-face { font-family: 'Schibsted'; font-weight: 400; src: url('fonts/Schibsted-Regular.ttf'); }
+@font-face { font-family: 'Schibsted'; font-weight: 600; src: url('fonts/Schibsted-SemiBold.ttf'); }
+@font-face { font-family: 'Schibsted'; font-weight: 700; src: url('fonts/Schibsted-Bold.ttf'); }
+@font-face { font-family: 'Instrument'; font-style: italic; src: url('fonts/InstrumentSerif-Italic.woff2') format('woff2'); }
+
+:root {
+  --ink: #15161a; --ink-2: #3d3f47; --ink-3: #6b6d75;
+  --rule: #e3ded4; --gold: #d9b26f; --gold-ink: #8a6a2f;
+  --night: #0b0c10; --cream: #f2ede5; --cream-2: #b8b2a7;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; }
+body { font-family: 'Schibsted', Arial, sans-serif; color: var(--ink); font-size: 8.9pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+a { color: inherit; text-decoration: none; }
+.page { width: 210mm; height: 297mm; overflow: hidden; position: relative; break-after: page; }
+.page:last-child { break-after: auto; }
+
+/* ---------- header band ---------- */
+.top { background: var(--night); color: var(--cream); padding: 9.5mm 15mm 7mm; display: flex; gap: 10mm; align-items: flex-start; }
+.who { flex: 1; min-width: 0; }
+h1 { font-family: 'ArchivoX', Arial Black, sans-serif; font-weight: 400; font-size: 26pt; white-space: nowrap; line-height: .95; letter-spacing: -.01em; margin: 0; text-transform: uppercase; }
+.role { font-family: 'Instrument', Georgia, serif; font-style: italic; color: var(--gold); font-size: 16pt; line-height: 1.1; margin: 2.5mm 0 3.5mm; }
+.contact { font-size: 8.6pt; color: var(--cream); line-height: 1.7; }
+.contact span + span::before { content: "·"; color: var(--cream-2); margin: 0 .5em; }
+.avail { margin-top: 1.5mm; font-size: 8.4pt; color: var(--cream-2); }
+.avail b { color: var(--cream); font-weight: 600; }
+
+.qr { width: 33mm; flex: none; background: var(--cream); color: var(--night); border-radius: 2.5mm; padding: 3mm; text-align: center; }
+.qr svg { display: block; width: 100%; height: auto; }
+.qr .lbl { font-family: 'Instrument', Georgia, serif; font-style: italic; font-size: 12pt; line-height: 1; margin: 2mm 0 .8mm; }
+.qr .url { font-size: 7pt; color: var(--gold-ink); font-weight: 600; margin: 0; }
+
+/* page-2 running header */
+.top2 { background: var(--night); color: var(--cream); padding: 5mm 15mm; display: flex; justify-content: space-between; align-items: baseline; }
+.top2 .n { font-family: 'ArchivoX', Arial Black, sans-serif; font-size: 11pt; text-transform: uppercase; }
+.top2 .r { font-family: 'Instrument', Georgia, serif; font-style: italic; color: var(--gold); font-size: 11.5pt; margin-left: 3mm; }
+.top2 a { font-size: 8pt; color: var(--gold); font-weight: 600; }
+
+/* ---------- proof grid ---------- */
+.proof { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 15mm; border-bottom: 1px solid var(--rule); }
+.proof div { padding: 3.4mm 3mm 3mm 4mm; border-left: 1px solid var(--rule); }
+.proof div:nth-child(3n+1) { border-left: 0; padding-left: 0; }
+.proof div:nth-child(n+4) { border-top: 1px solid var(--rule); }
+.proof b { display: block; font-family: 'ArchivoX', Arial Black, sans-serif; font-weight: 400; font-size: 14.5pt; line-height: 1; color: var(--ink); }
+.proof b em { font-style: normal; color: var(--gold-ink); }
+.proof span { display: block; font-size: 7.8pt; color: var(--ink-3); margin-top: 1.2mm; line-height: 1.3; }
+.proof .arr { vertical-align: middle; margin: 0 .8mm 1mm; }
+
+/* ---------- body ---------- */
+main { padding: 0 15mm; }
+section { margin-top: 4.2mm; }
+h2 { font-family: 'ArchivoS', Arial, sans-serif; font-weight: 400; font-size: 8.4pt; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); margin: 0 0 2mm; padding-bottom: 1.3mm; border-bottom: 1.5px solid var(--gold); }
+.summary { font-size: 9.3pt; color: var(--ink-2); margin: 0; }
+
+.job { margin-top: 2.4mm; }
+.job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+h3 { font-size: 10.4pt; font-weight: 700; margin: 0; }
+h3 small { font-size: 9.4pt; font-weight: 600; color: var(--ink-2); }
+.date { font-size: 8.3pt; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.org { font-size: 8.6pt; color: var(--gold-ink); font-weight: 600; margin: .3mm 0 1.2mm; }
+h4 { font-size: 7.6pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin: 2mm 0 .9mm; }
+ul { margin: 0; padding-left: 4.2mm; }
+li { margin: 0 0 .7mm; color: var(--ink-2); }
+li::marker { color: var(--gold); }
+li b { color: var(--ink); font-weight: 600; }
+.job.one .job-head h3 span { font-weight: 400; color: var(--ink-2); font-size: 9pt; }
+
+.projects > div { padding: 1.7mm 0; border-bottom: 1px solid var(--rule); }
+.projects > div:last-child { border-bottom: 0; }
+.projects .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+.projects b { font-size: 9.4pt; color: var(--ink); }
+.projects a { font-size: 7.8pt; color: var(--gold-ink); font-weight: 600; white-space: nowrap; }
+.projects p { margin: .5mm 0 0; color: var(--ink-2); }
+
+.skills { display: grid; grid-template-columns: 31mm 1fr; gap: 1.4mm 4mm; margin: 0; }
+.skills dt { font-weight: 700; font-size: 8.7pt; }
+.skills dd { margin: 0; color: var(--ink-2); }
+
+.edu { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+.edu p { margin: 0; }
+
+/* ---------- services sheet (consulting) ---------- */
+.services { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm 7mm; }
+.services div b { display: block; font-size: 9.6pt; color: var(--ink); }
+.services div p { margin: .5mm 0 0; color: var(--ink-2); }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; counter-reset: step; }
+.steps div { border-top: 1.5px solid var(--gold); padding-top: 2mm; }
+.steps b { display: block; font-size: 9.2pt; }
+.steps b::before { counter-increment: step; content: counter(step, decimal-leading-zero) "  "; color: var(--gold-ink); font-family: 'ArchivoS', Arial, sans-serif; }
+.steps p { margin: .6mm 0 0; color: var(--ink-2); font-size: 8.4pt; }
+.case p { margin: 0 0 1.4mm; color: var(--ink-2); }
+.case p b { color: var(--ink); }
+.cta { margin-top: 5mm; background: var(--night); color: var(--cream); border-radius: 2.5mm; padding: 5mm 6mm; display: flex; justify-content: space-between; align-items: center; gap: 6mm; }
+.cta .big { font-family: 'Instrument', Georgia, serif; font-style: italic; font-size: 17pt; color: var(--gold); line-height: 1.1; }
+.cta p { margin: 1mm 0 0; color: var(--cream-2); font-size: 8.6pt; }
+.cta .links { text-align: right; font-size: 8.8pt; line-height: 1.7; }
