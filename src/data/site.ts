@@ -29,6 +29,12 @@ export const site = {
   resumeAvailable: false,
   resumePath: '/resume/Abhinav-Thakur-Resume.pdf',
 
+  /**
+   * Background music for the Sound button. Put an MP3 in public/media/audio/ and set the
+   * path here, e.g. '/media/audio/ambient.mp3'. Leave null to use the generated ambient pad.
+   */
+  ambientTrack: null as string | null,
+
   availability:
     'Open to part-time roles in Melbourne — CRM and revenue operations, digital marketing, business development and operations in fintech, SaaS and technology. 20–24 hours a week in semester, full-time in uni breaks.',
 };

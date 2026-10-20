@@ -1,0 +1,131 @@
+---
+/**
+ * Opt-in ambient sound. Nothing loads or plays until the visitor presses the button.
+ * If site.ambientTrack is set, that file plays on a loop; otherwise a soft ambient
+ * pad is generated in the browser (no download). Either way the output runs through
+ * an AnalyserNode exposed as window.__soundAnalyser so the Signal visual can follow it.
+ */
+import { site } from '../data/site';
+import { url } from '../lib/url';
+const track = site.ambientTrack ? url(site.ambientTrack) : '';
+---
+<button type="button" class="snd" data-snd data-track={track} aria-pressed="false" aria-label="Play ambient sound">
+  <span class="snd__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span class="snd__txt">Sound</span>
+</button>
+
+<style>
+  .snd {
+    position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 60;
+    display: inline-flex; align-items: center; gap: 0.55rem; min-height: 2.75rem; padding: 0.55rem 0.95rem 0.55rem 0.8rem;
+    border-radius: 999px; border: 1px solid var(--line-2); color: var(--text-2);
+    background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(10px);
+    font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.1em; text-transform: uppercase;
+    transition: border-color 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .snd:hover, .snd[aria-pressed='true'] { border-color: var(--gold); color: var(--gold); }
+  .snd__eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .snd__eq i { width: 2px; height: 3px; background: currentColor; border-radius: 1px; transition: height 0.3s; }
+  .snd[aria-pressed='true'] .snd__eq i { animation: eq 0.9s ease-in-out infinite; }
+  .snd[aria-pressed='true'] .snd__eq i:nth-child(2) { animation-delay: -0.3s; }
+  .snd[aria-pressed='true'] .snd__eq i:nth-child(3) { animation-delay: -0.6s; }
+  .snd[aria-pressed='true'] .snd__eq i:nth-child(4) { animation-delay: -0.15s; }
+  @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+  @media (prefers-reduced-motion: reduce) { .snd[aria-pressed='true'] .snd__eq i { animation: none; height: 8px; } }
+  @media (max-width: 40rem) { .snd__txt { display: none; } .snd { padding: 0.55rem 0.8rem; } }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-snd]');
+  let ctx: AudioContext | null = null;
+  let master: GainNode | null = null;
+  let analyser: AnalyserNode | null = null;
+  let on = false;
+  const LEVEL = 0.22;
+
+  // A slow, warm pad: two chords that breathe into each other, plus the odd soft bell.
+  function generated(c: AudioContext, out: AudioNode) {
+    const chords = [
+      [110, 164.81, 207.65, 246.94, 277.18], // A maj9
+      [92.5, 138.59, 164.81, 220, 207.65], // F# m9
+      [123.47, 185, 233.08, 277.18, 311.13], // B add9
+      [82.41, 123.47, 164.81, 207.65, 246.94], // E maj7
+    ];
+    const filter = c.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 900; filter.Q.value = 0.6;
+    const lfo = c.createOscillator(); const lfoGain = c.createGain();
+    lfo.frequency.value = 0.06; lfoGain.gain.value = 380; lfo.connect(lfoGain).connect(filter.frequency); lfo.start();
+
+    const delay = c.createDelay(2); delay.delayTime.value = 0.48;
+    const fb = c.createGain(); fb.gain.value = 0.32;
+    const wet = c.createGain(); wet.gain.value = 0.35;
+    filter.connect(out); filter.connect(delay); delay.connect(fb).connect(delay); delay.connect(wet).connect(out);
+
+    const voices = chords[0].map((f) => {
+      const g = c.createGain(); g.gain.value = 0.06; g.connect(filter);
+      const a = c.createOscillator(); a.type = 'sine'; a.frequency.value = f;
+      const b = c.createOscillator(); b.type = 'triangle'; b.frequency.value = f; b.detune.value = -7;
+      a.connect(g); b.connect(g); a.start(); b.start();
+      return [a, b];
+    });
+
+    let step = 0;
+    const next = () => {
+      step = (step + 1) % chords.length;
+      const t = c.currentTime;
+      chords[step].forEach((f, i) => voices[i].forEach((o) => o.frequency.setTargetAtTime(f, t, 1.6)));
+    };
+    const chordTimer = setInterval(next, 9000);
+
+    const bells = [440, 554.37, 659.25, 830.61, 987.77, 1108.73];
+    const bell = () => {
+      const t = c.currentTime;
+      const o = c.createOscillator(); o.type = 'sine'; o.frequency.value = bells[Math.floor(Math.random() * bells.length)];
+      const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.05, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
+      o.connect(g).connect(delay); g.connect(out); o.start(t); o.stop(t + 3.3);
+    };
+    const bellTimer = setInterval(() => Math.random() < 0.6 && bell(), 2300);
+    return () => { clearInterval(chordTimer); clearInterval(bellTimer); };
+  }
+
+  async function init() {
+    ctx = new AudioContext();
+    master = ctx.createGain(); master.gain.value = 0;
+    analyser = ctx.createAnalyser(); analyser.fftSize = 256; analyser.smoothingTimeConstant = 0.82;
+    master.connect(analyser).connect(ctx.destination);
+    const track = btn?.dataset.track;
+    if (track) {
+      const el = new Audio(track); el.loop = true; el.crossOrigin = 'anonymous'; el.preload = 'auto';
+      ctx.createMediaElementSource(el).connect(master);
+      await el.play();
+    } else {
+      generated(ctx, master);
+    }
+  }
+
+  async function toggle() {
+    if (!btn) return;
+    on = !on;
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Mute ambient sound' : 'Play ambient sound');
+    try {
+      if (!ctx) await init();
+      if (ctx!.state === 'suspended') await ctx!.resume();
+      const t = ctx!.currentTime;
+      master!.gain.cancelScheduledValues(t);
+      master!.gain.setValueAtTime(master!.gain.value, t);
+      master!.gain.linearRampToValueAtTime(on ? LEVEL : 0, t + (on ? 2 : 0.8));
+      (window as any).__soundAnalyser = on ? analyser : null;
+      if (!on) setTimeout(() => !on && ctx?.suspend(), 900);
+    } catch {
+      on = false;
+      btn.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  btn?.addEventListener('click', toggle);
+  document.addEventListener('visibilitychange', () => {
+    if (!ctx || !on) return;
+    document.hidden ? ctx.suspend() : ctx.resume();
+  });
+</script>
