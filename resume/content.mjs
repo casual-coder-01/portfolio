@@ -224,5 +224,5 @@ export const consulting = {
     ['Build and test', 'I build it, then test it with your team on real leads.'],
     ['Handover', 'A short guide and screen-recorded walkthrough for your team.'],
   ],
-  tools: [['Zoho One', 'CRM · Marketing Automation · SalesIQ · Forms · Projects · People · WorkDrive · Cliq · Sign · also HubSpot and Salesforce']],
+  tools: [['Zoho One', 'CRM · Marketing Automation · SalesIQ · Forms · Projects · People · WorkDrive · Cliq · Sign'], ['Also', 'HubSpot · Salesforce']],
 };

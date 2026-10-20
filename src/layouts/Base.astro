@@ -16,8 +16,12 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   tone?: 'paper' | 'night';
+  /** Unlisted pages (role landing pages): reachable by link, hidden from search engines. */
+  noindex?: boolean;
+  /** Small line next to the name in the header. */
+  tagline?: string;
 }
-const { title = site.title, description = site.description, image = '/og.png', type = 'website', tone = 'paper' } = Astro.props;
+const { title = site.title, description = site.description, image = '/og.png', type = 'website', tone = 'paper', noindex = false, tagline } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = new URL(url(image), Astro.site).toString();
 
@@ -41,6 +45,7 @@ const jsonLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#07080b" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
@@ -67,7 +72,7 @@ const jsonLd = {
   </head>
   <body class:list={[{ night: tone === 'night' }]}>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header tagline={tagline} />
     <main id="main">
       <slot />
     </main>

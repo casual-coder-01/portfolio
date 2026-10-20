@@ -10,7 +10,7 @@ import { rbpCampaign, megoCampaign } from '../data/creative';
 interface Props { kind: 'markets' | 'crm' | 'outbound' | 'whatsapp' | 'creative'; size?: 'card' | 'hero'; mosaic?: boolean }
 const { kind, size = 'card', mosaic = false } = Astro.props;
 
-const markets = ['France', 'Canada', 'Malaysia', 'UAE'];
+const markets = ['France', 'Canada', 'USA', 'Malaysia', 'UAE', 'Saudi Arabia', 'South Korea', 'India'];
 const stages = [
   ['Enquiry received', 10], ['Meeting', 25], ['Quote given', 40], ['Documents & KYC submitted', 55],
   ['Documents verified', 70], ['Payment received', 85], ['Activated', 100],
@@ -96,10 +96,10 @@ const collage = mosaic
 
   /* Markets */
   .mk { height: 100%; display: grid; align-content: space-between; gap: 2rem; padding: clamp(1.25rem, 3vw, 2.5rem); background: var(--paper-2); border-radius: var(--radius); }
-  .mk__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.2rem; }
+  .mk__list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.2rem 1.5rem; }
   .mk__list li { display: flex; align-items: baseline; gap: 1rem; border-bottom: 1px solid var(--rule); padding-block: 0.35rem; }
-  .mk__name { font-size: clamp(2rem, 1.2rem + 3.2vw, 4.25rem); font-weight: 620; letter-spacing: -0.04em; line-height: 1.05; }
-  .mk__list li:nth-child(even) .mk__name { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
+  .mk__name { font-size: clamp(1.35rem, 0.9rem + 1.6vw, 2.5rem); font-weight: 620; letter-spacing: -0.04em; line-height: 1.05; }
+  .mk__list li:nth-child(4n + 2) .mk__name, .mk__list li:nth-child(4n + 3) .mk__name { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
 
   /* CRM */
   .crm { height: 100%; padding: clamp(1.25rem, 3vw, 2.5rem); background: var(--paper-2); border-radius: var(--radius); display: grid; gap: 1.25rem; align-content: center; }
