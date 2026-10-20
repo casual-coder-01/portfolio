@@ -8,7 +8,7 @@ import Lightbox from '../components/Lightbox.astro';
 import portrait from '../assets/me/abhinav-portrait.jpg';
 import { site, role } from '../data/site';
 import { stats, marquee, timeline, toolkit, about } from '../data/profile';
-import { rbpCampaign, megoCampaign, videos } from '../data/creative';
+import { rbpCampaign, megoCampaign, films, reels } from '../data/creative';
 import { url } from '../lib/url';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -167,7 +167,10 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
         </div>
       </header>
       <div class="video-grid">
-        {videos.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+        {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+      </div>
+      <div class="reel-grid">
+        {reels.slice(0, 4).map((v, i) => <VideoCard video={v} index={i + 3} />)}
       </div>
       <p class="reel__more"><a class="link label" href={url('/work/ai-creative/#motion')}>All videos in the creative case study →</a></p>
     </div>

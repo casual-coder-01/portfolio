@@ -14,7 +14,7 @@ import Engine from '../../components/Engine.astro';
 import portrait from '../../assets/me/abhinav-portrait.jpg';
 import { site } from '../../data/site';
 import { rolePages, path as careerPath, social, products, countries, services, steps, caseStudy, type RolePage } from '../../data/roles';
-import { rbpCampaign, megoCampaign, videos } from '../../data/creative';
+import { rbpCampaign, megoCampaign, films, reels } from '../../data/creative';
 import { url } from '../../lib/url';
 
 export function getStaticPaths() {
@@ -252,7 +252,10 @@ const socialMax = Math.max(...social.map((s) => s.to));
           </div>
         </header>
         <div class="video-grid">
-          {videos.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+          {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+        </div>
+        <div class="reel-grid">
+          {reels.map((v, i) => <VideoCard video={v} index={i + 3} />)}
         </div>
       </div>
     </section>

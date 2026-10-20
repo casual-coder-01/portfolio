@@ -200,3 +200,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em
 .marquee__item:nth-child(odd) { color: transparent; -webkit-text-stroke: 1px var(--text-2); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
+
+/* Vertical reels (9:16) sit in their own row of phone-shaped tiles. */
+.reel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: clamp(1rem, 2vw, 1.5rem); margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+@media (max-width: 30rem) { .reel-grid { grid-template-columns: 1fr 1fr; } }
