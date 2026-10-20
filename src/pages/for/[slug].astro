@@ -251,11 +251,11 @@ const socialMax = Math.max(...social.map((s) => s.to));
             <p class="label">AI-made films and ads · press play to load</p>
           </div>
         </header>
-        <div class="video-grid">
-          {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+        <div class="reel-grid reel-grid--lead">
+          {reels.map((v, i) => <VideoCard video={v} index={i} />)}
         </div>
-        <div class="reel-grid">
-          {reels.map((v, i) => <VideoCard video={v} index={i + 3} />)}
+        <div class="video-grid">
+          {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i + reels.length} featured={i === 0} />)}
         </div>
       </div>
     </section>

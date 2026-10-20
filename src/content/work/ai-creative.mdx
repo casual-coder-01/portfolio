@@ -55,11 +55,11 @@ Brand films, ads and product promos made with Higgsfield, Google Flow and Eleven
 </Part>
 
 <Wide>
-<div class="video-grid">
-  {films.map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+<div class="reel-grid reel-grid--lead">
+  {reels.map((v, i) => <VideoCard video={v} index={i} />)}
 </div>
-<div class="reel-grid">
-  {reels.map((v, i) => <VideoCard video={v} index={i + films.length} />)}
+<div class="video-grid">
+  {films.map((v, i) => <VideoCard video={v} index={i + reels.length} featured={i === 0} />)}
 </div>
 </Wide>
 

@@ -193,14 +193,13 @@ export type VideoItem = {
 } & ({ kind: 'drive'; driveId: string } | { kind: 'local'; slug: string });
 
 export const videos: VideoItem[] = [
-  { kind: 'drive', driveId: '11La60rHnMWZW1qSCDX-y3lFkaq6Jjycl', title: 'Brand film — cut 2', ratio: 16 / 9 },
   { kind: 'local', slug: 'mego-coffee-run', title: 'The coffee run', description: 'MEGO Forex card', ratio: 16 / 9 },
   { kind: 'local', slug: 'mego-app-promo', title: 'MEGO Forex app promo', ratio: 16 / 9 },
   { kind: 'drive', driveId: '1d7mvYTkw4tXTFckgF9-co-NkoJZ5pOnS', title: 'Brand film — cut 3', ratio: 16 / 9 },
+  { kind: 'local', slug: 'mego-forex-presenter', title: 'Forex offer', description: 'MEGO Forex, AI presenter', ratio: 9 / 16 },
   { kind: 'local', slug: 'mego-international-sim', title: 'International SIM', description: 'MEGO Forex reel', ratio: 9 / 16 },
   { kind: 'local', slug: 'rbp-travel-agency-pitch', title: 'Travel-agency pitch', description: 'RBP Finivis, AI presenter', ratio: 9 / 16 },
   { kind: 'local', slug: 'mego-money-moves', title: 'Money moves', description: 'MEGO Forex reel', ratio: 9 / 16 },
-  { kind: 'local', slug: 'mego-forex-presenter', title: 'Forex offer', description: 'MEGO Forex, AI presenter', ratio: 9 / 16 },
   { kind: 'local', slug: 'mego-money-follow', title: 'Money follow', description: 'MEGO Forex reel', ratio: 9 / 16 },
 ];
 

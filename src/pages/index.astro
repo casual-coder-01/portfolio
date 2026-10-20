@@ -166,11 +166,11 @@ const tenure = `${Math.floor(months / 12)}y ${months % 12}m`;
           <p class="label">Films and ads · press play to load</p>
         </div>
       </header>
-      <div class="video-grid">
-        {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i} featured={i === 0} />)}
+      <div class="reel-grid reel-grid--lead">
+        {reels.slice(0, 4).map((v, i) => <VideoCard video={v} index={i} />)}
       </div>
-      <div class="reel-grid">
-        {reels.slice(0, 4).map((v, i) => <VideoCard video={v} index={i + 3} />)}
+      <div class="video-grid">
+        {films.slice(0, 3).map((v, i) => <VideoCard video={v} index={i + 4} featured={i === 0} />)}
       </div>
       <p class="reel__more"><a class="link label" href={url('/work/ai-creative/#motion')}>All videos in the creative case study →</a></p>
     </div>

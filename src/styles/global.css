@@ -204,3 +204,4 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em
 /* Vertical reels (9:16) sit in their own row of phone-shaped tiles. */
 .reel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: clamp(1rem, 2vw, 1.5rem); margin-top: clamp(1.5rem, 3vw, 2.5rem); }
 @media (max-width: 30rem) { .reel-grid { grid-template-columns: 1fr 1fr; } }
+.reel-grid--lead { margin-top: 0; margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
