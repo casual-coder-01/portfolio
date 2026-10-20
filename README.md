@@ -21,6 +21,27 @@ npm run preview    # serve the production build locally
 
 Requires Node 20+. The first build takes ~2 minutes while images are optimised; later builds reuse the cache.
 
+## Résumés
+
+Five role-specific résumés are generated from one content file:
+
+| File | Role | QR / link goes to |
+|---|---|---|
+| `Abhinav-Thakur-Resume-CRM-RevOps.pdf` | CRM & Revenue Operations Specialist | `/for/revops/` |
+| `Abhinav-Thakur-Resume-Digital-Marketing.pdf` | Growth & Digital Marketing Coordinator | `/for/marketing/` |
+| `Abhinav-Thakur-Resume-Business-Development.pdf` | Business Development — Fintech, Payments & SaaS | `/for/sales/` |
+| `Abhinav-Thakur-Resume-Operations.pdf` | Operations & Growth Associate | `/for/operations/` |
+| `Abhinav-Thakur-Zoho-Automation-Services.pdf` | Zoho & Automation Consultant (1-page services sheet) | `/for/consulting/` |
+
+```bash
+npm run resume     # rebuild all five into public/resume/
+```
+
+Needs a local Chrome or Chromium (set `CHROME_PATH` if it isn't found). The build fails if any
+page overflows or has less than 8 mm bottom margin, so trim a bullet in `resume/content.mjs`
+if that happens. Layout is one column top to bottom with real embedded fonts, so job-portal
+(ATS) parsers read it in order.
+
 ## Deploying
 
 Every push to `main` deploys automatically (`.github/workflows/deploy.yml`):
@@ -48,7 +69,7 @@ and the Pages URL follows.
 |---|---|
 | Add email / LinkedIn / GitHub | `src/data/site.ts` → `email`, `linkedin`, `github` |
 | Set my title and dates | `src/data/site.ts` → `role.title`, `role.period` |
-| Turn on the résumé button | put the PDF at `public/resume/Abhinav-Thakur-Resume.pdf`, set `resumeAvailable: true` in `src/data/site.ts` |
+| Edit a résumé (5 role versions) | words in `resume/content.mjs`, look in `resume/resume.css`, then `npm run resume` → PDFs in `public/resume/` |
 | Change hero, proof row, experience, toolkit, about | `src/pages/index.astro` (hero) and `src/data/profile.ts` (everything else) |
 | Edit a case study | `src/content/work/<name>.mdx` |
 | Add / swap gallery images | `src/data/creative.ts` + files in `src/assets/creative/` |
